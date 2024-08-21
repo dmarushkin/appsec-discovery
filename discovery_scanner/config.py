@@ -1,0 +1,15 @@
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL") 
+GITLAB_PRIVATE_TOKEN = os.getenv("GITLAB_PRIVATE_TOKEN") 
+GITLAB_URL = os.getenv("GITLAB_URL")
+
+GITLAB_PROJECTS_PREFIX = os.getenv("GITLAB_PROJECTS_PREFIX").split(",")
+
+MAX_WORKERS = int(os.getenv("MAX_WORKERS"))
+
+MM_ALERT_TOKEN = os.getenv("MM_ALERT_TOKEN")
+MM_ALERT_URL = os.getenv("MM_ALERT_URL")
+
+TG_ALERT_TOKEN = os.getenv("TG_ALERT_TOKEN")
+TG_CHAT_ID = os.getenv("TG_CHAT_ID")

@@ -1,0 +1,8 @@
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+UI_ADMIN_EMAIL = os.getenv("UI_ADMIN_EMAIL")
+UI_ADMIN_PASSWORD = os.getenv("UI_ADMIN_PASSWORD")
+UI_JWT_KEY = os.getenv("UI_JWT_KEY")
+ALGORITHM = "HS256"

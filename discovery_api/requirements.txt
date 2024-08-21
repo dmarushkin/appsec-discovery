@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+databases
+psycopg2-binary
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
+SQLAlchemy==2.0.29
+sqlmodel==0.0.16
+python-multipart

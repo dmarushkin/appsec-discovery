@@ -1,0 +1,80 @@
+services:
+
+  discovery_scanner:
+    container_name: discovery_scanner
+    platform: "linux/amd64"
+    build: 
+      context: ./discovery_scanner
+      platforms:
+        - "linux/amd64"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}/${POSTGRES_DB}
+      - GITLAB_URL=${GITLAB_URL}
+      - GITLAB_PRIVATE_TOKEN=${GITLAB_PRIVATE_TOKEN}
+      - GITLAB_PROJECTS_PREFIX=${GITLAB_PROJECTS_PREFIX}
+      - MAX_WORKERS=${MAX_WORKERS}
+      - MM_ALERT_TOKEN=${MM_ALERT_TOKEN}
+      - MM_ALERT_URL=${MM_ALERT_URL}
+      - TG_ALERT_TOKEN=${TG_ALERT_TOKEN}
+      - TG_CHAT_ID=${TG_CHAT_ID}
+    depends_on:
+      - discovery_postgres
+
+  discovery_api:
+    container_name: discovery_api
+    platform: "linux/amd64"
+    build: 
+      context: ./discovery_api
+      platforms:
+        - "linux/amd64"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}/${POSTGRES_DB}
+      - UI_ADMIN_EMAIL=${UI_ADMIN_EMAIL}
+      - UI_ADMIN_PASSWORD=${UI_ADMIN_PASSWORD}
+      - UI_JWT_KEY=${UI_JWT_KEY}
+    depends_on:
+      - discovery_postgres
+
+  discovery_ui:
+    container_name: discovery_ui
+    platform: "linux/amd64"
+    build:
+      context: ./discovery_ui
+      platforms:
+        - "linux/amd64"
+    restart: always
+
+  discovery_postgres:
+    container_name: discovery_postgres
+    image: postgres:13
+    platform: "linux/amd64"     
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "54321:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  discovery_nginx:
+    container_name: discovery_nginx
+    image: nginx:alpine
+    platform: "linux/amd64"     
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./discovery_nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./discovery_ui/build:/usr/share/nginx/html
+    depends_on:
+      - discovery_api
+      - discovery_ui
+
+volumes:
+  pg_data:
+    driver: local 
+    driver_opts:
+      type: none
+      device: ${PWD}/pg_data
+      o: bind
