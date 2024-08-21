@@ -1,6 +1,6 @@
 # Appsec Discovery
 
-It loads projects and open MRs from private Gitlab api, clone main branches and MRs code into local folders, extract db, proto, graphql schemas and client objects from code with semgrep rules, score it with rules, those you add via simple UI, normalize and put scored objects into service db and alert about critical changes in Telegram.
+Service loads projects and open MRs from private Gitlab api, clone main branches and MRs code into local folders, extract db, proto, graphql schemas and client objects from code with semgrep rules, score it with rules, those you add via simple UI, normalize and put scored objects into service db and alert about critical changes in Telegram.
 
 # Why we need all that
 
