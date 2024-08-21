@@ -2,6 +2,8 @@
 
 It loads projects and open MRs from private Gitlab api, clone main branches and MRs code into local folders, extract db, proto, graphql schemas and client objects from code with semgrep rules, score it with rules, those you add via simple UI, normalize and put scored objects into service db and alert about critical changes in Telegram.
 
+![Logic schema](https://github.com/dmarushkin/appsec-discovery/blob/main/discovery.png?raw=true)
+
 # Why we need all that
 
 As Appsec specialist you can monitor your codebase for critical changes and review them manualy, also you can sum scores for particular fields and get overall risk score for entire projects, and use it for prioritization of any kind of appsec rutines (triage vulns, plan security audits).
