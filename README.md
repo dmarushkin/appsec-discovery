@@ -55,5 +55,5 @@ To run service localy you just need docker compose and run this command in proje
 docker-compose up --build
 ```
 
-For prod environments feel free to bake Docker images in your k8s env, use external db, prodaction Grafana or Superset for dashboards and any kind off analytics ;)
+For prod environments feel free to bake Docker images in your k8s env, use external db, production Grafana or Superset for dashboards and any kind off analytics ;)
 
