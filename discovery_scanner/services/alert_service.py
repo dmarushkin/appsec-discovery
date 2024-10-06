@@ -2,7 +2,8 @@ import requests
 import json
 from logger import get_logger
 
-from config import MM_ALERT_TOKEN, MM_ALERT_URL, TG_ALERT_TOKEN, TG_CHAT_ID, GITLAB_URL
+from config import MR_ALERTS, TG_ALERT_TOKEN, TG_CHAT_ID, GITLAB_URL
+from services.gl_service import add_gitlab_comment_to_mr
 
 logger = get_logger(__name__)
 
@@ -31,16 +32,14 @@ def render_and_send_alert(project, branch, mr_id, crit_objects):
 
         message += '\nClient calls:\n'
 
-        for client_obj in crit_objects['proto_objs'].values():
+        for client_obj in crit_objects['client_objs'].values():
             message += f'  {client_obj.package}{client_obj.method} calls {client_obj.url} scored as risky for {client_obj.score}\n'
 
-    if MM_ALERT_TOKEN and MM_ALERT_URL:
+    if MR_ALERTS :
         
-        send_mm_alert(title, message)
+        send_mr_alert(project, mr_id, title, message)
 
         logger.info(f"Alert for {project}, mr {mr_id} sent to mm")
-
-        return True
 
     if TG_ALERT_TOKEN and TG_CHAT_ID:
         send_tg_alert(title, message)
@@ -49,37 +48,6 @@ def render_and_send_alert(project, branch, mr_id, crit_objects):
         return True
     
     logger.error(f"Alert for {project}, mr {mr_id} does not sent, {MM_ALERT_TOKEN} {MM_ALERT_URL}")
-
-def send_mm_alert(alert_title, alert_text):
-
-    # Payload for the POST request
-    payload = {
-        "description": alert_text,
-        "message": alert_title,
-        "details": {
-            "responsible_team": "appsec_team",
-            "severity": "low",
-            "channel": "appsec-duty"
-        },
-        "priority": "P4",
-        "responders": [{"name": "appsec_team", "type": "team"}]
-    }
-
-    # Headers for the POST request
-    headers = {
-        "authorization": f"AuthKey {MM_ALERT_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    # Making the POST request
-    response = requests.post(MM_ALERT_URL, data=json.dumps(payload), headers=headers)
-
-    # Checking the response
-    if response.status_code == 200:
-        print("Alert created successfully")
-    else:
-        print(f"Failed to create alert: {response.status_code}")
-        print(response.text)
 
 
 def send_tg_alert(alert_title, alert_text):
@@ -97,11 +65,19 @@ def send_tg_alert(alert_title, alert_text):
     
     # Checking the response
     if response.status_code == 200:
-        print("Alert created successfully")
+        logger.info("Alert created successfully")
     else:
-        print(f"Failed to create alert: {response.status_code}")
-        print(response.text)
+        logger.info(f"Failed to create alert: {response.status_code}")
+        logger.info(response.text)
 
 
+def send_mr_alert(project_id, mr_id, alert_title, alert_text):
 
+    comment = f"{alert_title}\n{alert_text}"
+    
+    res = add_gitlab_comment_to_mr(project_id, mr_id, comment)
+   
+    # Checking the response
+    if res :
+        logger.info("Mr Alert created successfully")
 

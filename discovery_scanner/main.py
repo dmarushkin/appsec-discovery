@@ -7,7 +7,9 @@ from services.gl_service import (
     get_gitlab_mrs_by_project,
     clone_gitlab_project_code,
     get_gitlab_project_lang,
+    get_gitlab_code_cache_size,
     get_cloned_projects,
+    remove_cloned_branch,
     remove_cloned_project
 )
 from services.scan_service import (
@@ -17,7 +19,6 @@ from services.scan_service import (
 from services.db_service import (
     create_db_and_tables,
     get_db_session,
-    get_project,
     update_project,
     upsert_project, 
     upsert_branch, 
@@ -28,13 +29,15 @@ from services.db_service import (
 )
 from datetime import datetime, timedelta
 from logger import get_logger
-from config import GITLAB_PROJECTS_PREFIX, MAX_WORKERS
+from config import GITLAB_PROJECTS_PREFIX, MAX_WORKERS, CACHE_SIZE, set_auth
 
 logger = get_logger(__name__)
 
 def update_projects(update_branches_mrs_queue):
 
     session = get_db_session()
+
+    first_time_run = True
 
     while True:
 
@@ -46,8 +49,13 @@ def update_projects(update_branches_mrs_queue):
 
                 project_db, _ = upsert_project(session, project_gl)
 
-                if project_db.processed_at is None or project_db.processed_at < project_db.updated_at  :
+                if first_time_run or project_db.processed_at is None or project_db.processed_at < project_db.updated_at :
                     update_branches_mrs_queue.put((project_gl,project_db))
+
+                    project_db.processed_at = datetime.now()
+                    update_project(session, project_db)     
+
+        first_time_run = False
 
         time.sleep(300)
 
@@ -57,14 +65,9 @@ def update_branches_mrs(update_branches_mrs_queue,  pull_code_queue):
     session = get_db_session()
 
     while True:
-        
-        main_branch = None
-        main_branch_in_mrs = False
-
-        to_scan_count = 0
 
         project_gl, project_db = update_branches_mrs_queue.get()
-    
+
         branches = get_gitlab_branches_by_project(project_gl.id)
 
         for branch_gl in branches:
@@ -72,8 +75,8 @@ def update_branches_mrs(update_branches_mrs_queue,  pull_code_queue):
             branch_db, _ = upsert_branch(session, branch_gl, project_db.id, project_db.full_path, is_main)
 
             if is_main and ( branch_db.processed_at is None or branch_db.processed_at < branch_db.updated_at ):
-                main_branch = branch_db
-        
+                pull_code_queue.put((branch_db,'main'))
+                
         mrs_gl = get_gitlab_mrs_by_project(project_gl.id)
 
         for mr_gl in mrs_gl:
@@ -85,32 +88,23 @@ def update_branches_mrs(update_branches_mrs_queue,  pull_code_queue):
                 mr_db, _ = upsert_mr(session, mr_gl, project_db.id, project_db.full_path, source_branch, target_branch)
 
                 if mr_db.state == 'opened' and mr_db.updated_at > datetime.now() - timedelta(days=1) and ( mr_db.processed_at is None or mr_db.processed_at < mr_db.updated_at ):
-                    pull_code_queue.put((mr_db,'mr'))
-                    to_scan_count += 1
-
-                    if mr_gl.target_branch == project_gl.default_branch :
-                        main_branch_in_mrs = True
-
-        if main_branch and not main_branch_in_mrs :
-            pull_code_queue.put((main_branch,'main'))
-            to_scan_count += 1
-
-        if to_scan_count == 0 :
-            project_db.processed_at = datetime.now()
-            update_project(session, project_db)     
+                    pull_code_queue.put((mr_db,'mr'))   
 
 
-def pull_code(pull_code_queue, scan_mrs_queue, scan_mains_queue):
+def pull_code(pull_code_queue, scan_mrs_queue, scan_mains_queue, projects_in_work):
 
     session = get_db_session()
 
     while True:
 
-        # limit storage usage
-        cloned_projects = get_cloned_projects()
-        if len(cloned_projects) > MAX_WORKERS:
-            time.sleep(30)
-            continue
+        current_size = get_gitlab_code_cache_size()
+
+        if current_size > CACHE_SIZE:
+
+            logger.info(f"Cache to big, no more clones until we dial with exist ones")
+    
+            time.sleep(300)
+            continue 
 
         obj, obj_type = pull_code_queue.get()
 
@@ -125,7 +119,19 @@ def pull_code(pull_code_queue, scan_mrs_queue, scan_mains_queue):
                 clone_branch_res = clone_gitlab_project_code(main_branch.project_path, main_branch.branch_name, main_branch.project_id, main_branch.id, main_branch.commit)
 
                 if clone_branch_res:
+
+                    if obj.project_id not in projects_in_work:
+                        project_in_work = {'mrs':{}, 'main': {}, 'last_update': datetime.now()}
+                    else:
+                        project_in_work = projects_in_work[obj.project_id].copy()
+
+                    project_in_work['main'][main_branch.id] = 1
+                    project_in_work['last_update'] = datetime.now()
+
+                    projects_in_work[obj.project_id] = project_in_work
+
                     scan_mains_queue.put(main_branch)
+
                 else:         
                     main_branch.processed_at = datetime.now()
                     update_branch(session, main_branch)
@@ -146,7 +152,19 @@ def pull_code(pull_code_queue, scan_mrs_queue, scan_mains_queue):
                 clone_target_branch_res = clone_gitlab_project_code(mr.project_path, mr.target_branch, mr.project_id, mr.target_branch_id, mr.target_branch_commit)
 
                 if clone_source_branch_res and clone_target_branch_res:
+
+                    if mr.project_id not in projects_in_work:
+                        project_in_work = {'mrs':{}, 'main': {}, 'last_update': datetime.now()}
+                    else:
+                        project_in_work = projects_in_work[obj.project_id].copy()
+
+                    project_in_work['mrs'][mr.id] = 1
+                    project_in_work['last_update'] = datetime.now()
+
+                    projects_in_work[mr.project_id] = project_in_work
+
                     scan_mrs_queue.put(mr)
+
                 else:
                     mr.processed_at = datetime.now()
                     update_mr(session, mr)
@@ -156,7 +174,7 @@ def pull_code(pull_code_queue, scan_mrs_queue, scan_mains_queue):
                 update_mr(session, mr)
 
            
-def scan_mains(scan_mains_queue):
+def scan_mains(scan_mains_queue, projects_in_work):
 
     session = get_db_session()
 
@@ -166,58 +184,77 @@ def scan_mains(scan_mains_queue):
 
         scan_branch(session, main_branch)
 
+        if main_branch.project_id in projects_in_work:
+            project_in_work = projects_in_work[main_branch.project_id].copy()
+            project_in_work['main'].pop(main_branch.id, None)
+            project_in_work['last_update'] = datetime.now()
+
+            projects_in_work[main_branch.project_id] = project_in_work
+
         main_branch.processed_at = datetime.now()
         update_branch(session, main_branch)
 
 
-def scan_mrs(scan_mrs_queue):
+def scan_mrs(scan_mrs_queue, projects_in_work):
 
     session = get_db_session()
 
     while True:
 
         mr = scan_mrs_queue.get()
-        
-        target_branch = get_branch(session, mr.project_id, mr.target_branch)
-
-        if target_branch.is_main and (target_branch.processed_at is None or target_branch.processed_at < target_branch.updated_at) :
-            scan_branch(session, target_branch)
-
-            target_branch.processed_at = datetime.now()
-            update_branch(session, target_branch)
 
         scan_mr(session, mr.project_id, mr.project_path, mr.mr_id,
             mr.source_branch, mr.source_branch_id, mr.source_branch_commit,
             mr.target_branch, mr.target_branch_id, mr.target_branch_commit)
+        
+        if mr.project_id in projects_in_work:
+            project_in_work = projects_in_work[mr.project_id].copy()
+            project_in_work['mrs'].pop(mr.id, None)
+            project_in_work['last_update'] = datetime.now()
+
+            projects_in_work[mr.project_id] = project_in_work
+
+        # clean one time source code and artifacts, safe target code
+        remove_cloned_branch(mr.project_id, mr.source_branch_id)
 
         mr.processed_at = datetime.now()
-        update_mr(session, mr)       
+        update_mr(session, mr)          
 
 
-def remove_code():
-
-    session = get_db_session()
+def clean_cache(projects_in_work):
 
     while True:
 
         project_ids = get_cloned_projects()
+        sorted_piw = dict(sorted(projects_in_work.copy().items(), key=lambda item: item[1]['last_update']))
+
+        logger.info(f"Cleaning local cached code for {len(project_ids)} projects, {len(sorted_piw)} projects in work")
 
         for project_id in project_ids:
 
-            project = get_project(session, project_id)
+            if project_id in sorted_piw and len(sorted_piw[project_id]['main']) == 0 and len(sorted_piw[project_id]['mrs']) == 0 :
 
-            if project.processed_at and project.processed_at > project.updated_at:
+                logger.info(f"Project {project_id} code cache can be cleared")
 
-                remove_cloned_project(project_id)
+                current_size = get_gitlab_code_cache_size()
 
-        time.sleep(3000)
-
+                if current_size > (CACHE_SIZE / 3):   
+                    remove_cloned_project(project_id)
+                    projects_in_work.pop(project_id, None)
+                else:                   
+                    break  
+        
+        time.sleep(60)
 
 
 def main():
 
     create_db_and_tables()
 
+    set_auth()
+
+    manager = mp.Manager()
+    projects_in_work = manager.dict()
 
     update_branches_mrs_queue = mp.Queue()
     pull_code_queue = mp.Queue()
@@ -225,31 +262,32 @@ def main():
     scan_mains_queue = mp.Queue()
 
     # load projects info
-
     update_projects_worker = mp.Process(target=update_projects, args=(update_branches_mrs_queue,))
     update_projects_worker.start()        
 
-    update_branches_mrs_worker = mp.Process(target=update_branches_mrs, args=(update_branches_mrs_queue, pull_code_queue))
+    # load branches and mrs 
+    update_branches_mrs_worker = mp.Process(target=update_branches_mrs, args=(update_branches_mrs_queue, pull_code_queue, ))
     update_branches_mrs_worker.start()
 
+    # pull code for scans
+    pull_code_worker = mp.Process(target=pull_code, args=(pull_code_queue, scan_mrs_queue, scan_mains_queue, projects_in_work))
+    pull_code_worker.start()
     
-    # 5 instanses for each worker
+    # clear cache for allready scanned projects
+    clean_cache_worker = mp.Process(target=clean_cache, args=(projects_in_work,))
+    clean_cache_worker.start() 
 
+    # scan workers
     for i in range(MAX_WORKERS):
-
-        # pull code for scans
-
-        pull_code_worker = mp.Process(target=pull_code, args=(pull_code_queue, scan_mrs_queue, scan_mains_queue))
-        pull_code_worker.start()
-
-        # scan code
         
-        scan_mrs_worker = mp.Process(target=scan_mrs, args=(scan_mrs_queue,))
+        scan_mrs_worker = mp.Process(target=scan_mrs, args=(scan_mrs_queue, projects_in_work))
         scan_mrs_worker.start()
 
-
-        scan_mains_worker = mp.Process(target=scan_mains, args=(scan_mains_queue,))
+        scan_mains_worker = mp.Process(target=scan_mains, args=(scan_mains_queue, projects_in_work))
         scan_mains_worker.start()
+
+    # wait for subprocesses and handle piw dict
+    clean_cache_worker.join()
 
 
 if __name__ == "__main__":

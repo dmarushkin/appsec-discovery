@@ -64,7 +64,7 @@ def update_project(session, project: Project):
         statement = select(Project).where(Project.id == project.id)
         existing_project = session.exec(statement).first()
 
-        logger.info(f"Updating existing project: {existing_project.full_path}, p_id: {project.id}")
+        # logger.info(f"Updating existing project: {existing_project.full_path}, p_id: {project.id}")
         for key, value in project.model_dump(exclude_unset=True).items():
             setattr(existing_project, key, value)
         result = 'updated'

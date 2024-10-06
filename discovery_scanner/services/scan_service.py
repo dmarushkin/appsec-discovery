@@ -31,202 +31,216 @@ logger = get_logger(__name__)
 
 def scan_branch(session, branch):
 
-    project_id = branch.project_id
-    project_path = branch.project_path
-    branch_name = branch.branch_name
-    branch_id = branch.id
-    branch_commit = branch.commit
+    try:
 
-    project_lang = get_gitlab_project_lang(project_path, branch_name) 
+        project_id = branch.project_id
+        project_path = branch.project_path
+        branch_name = branch.branch_name
+        branch_id = branch.id
+        branch_commit = branch.commit
 
-    if clone_gitlab_project_code(project_path, branch_name, project_id, branch_id, branch_commit) :
-      
-        if project_lang == 'go': 
+        project_lang = get_gitlab_project_lang(project_path, branch_name) 
 
-            score_rules = get_score_rules(session)
-            
-            scan = Scan(
-                scanner='db_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=branch_id,
-                branch_commit=branch_commit,
-                scanned_at=datetime.now()
-            )
+        if clone_gitlab_project_code(project_path, branch_name, project_id, branch_id, branch_commit) :
+        
+            if project_lang == 'go': 
 
-            if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
+                score_rules = get_score_rules(session)
                 
-                db_objects_list, result = run_db_scan(project_path, project_id, branch_id, branch_commit, score_rules)
+                scan = Scan(
+                    scanner='db_scan',
+                    rules_version='1.0.2',
+                    project_id=project_id,
+                    branch_id=branch_id,
+                    branch_commit=branch_commit,
+                    scanned_at=datetime.now()
+                )
 
-                for table_object in db_objects_list:
-                    upsert_table_obj(session, table_object)
+                if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
+                    
+                    db_objects_list, result = run_db_scan(project_path, project_id, branch_id, branch_commit, score_rules)
 
-                if result == 'scanned':
-                    insert_scan(session, scan)
-            else:
-                logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
+                    for table_object in db_objects_list:
+                        upsert_table_obj(session, table_object)
 
-            scan = Scan(
-                scanner='proto_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=branch_id,
-                branch_commit=branch_commit,
-                scanned_at=datetime.now()
-            )
+                    if result == 'scanned':
+                        insert_scan(session, scan)
+                else:
+                    logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
 
-            if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
-                
-                proto_objects_list, result = run_proto_scan(project_path, project_id, branch_id, branch_commit, score_rules)
+                scan = Scan(
+                    scanner='proto_scan',
+                    rules_version='1.0.2',
+                    project_id=project_id,
+                    branch_id=branch_id,
+                    branch_commit=branch_commit,
+                    scanned_at=datetime.now()
+                )
 
-                for proto_object in proto_objects_list:
-                    upsert_proto_obj(session, proto_object)
+                if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
+                    
+                    proto_objects_list, result = run_proto_scan(project_path, project_id, branch_id, branch_commit, score_rules)
 
-                if result == 'scanned':
-                    insert_scan(session, scan)
-            else:
-                logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
+                    for proto_object in proto_objects_list:
+                        upsert_proto_obj(session, proto_object)
 
-            scan = Scan(
-                scanner='client_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=branch_id,
-                branch_commit=branch_commit,
-                scanned_at=datetime.now()
-            )
+                    if result == 'scanned':
+                        insert_scan(session, scan)
+                else:
+                    logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
 
-            if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
-                
-                client_objects_list, result = run_client_scan(session, project_path, project_id, branch_id, branch_commit, score_rules)
+                scan = Scan(
+                    scanner='client_scan',
+                    rules_version='1.0.2',
+                    project_id=project_id,
+                    branch_id=branch_id,
+                    branch_commit=branch_commit,
+                    scanned_at=datetime.now()
+                )
 
-                for client_object in client_objects_list:
-                    upsert_client_obj(session, client_object)
+                if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
+                    
+                    client_objects_list, result = run_client_scan(session, project_path, project_id, branch_id, branch_commit, score_rules)
 
-                if result == 'scanned':
-                    insert_scan(session, scan)
-            else:
-                logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
+                    for client_object in client_objects_list:
+                        upsert_client_obj(session, client_object)
 
-        if 'terraform' in project_path:
+                    if result == 'scanned':
+                        insert_scan(session, scan)
+                else:
+                    logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
 
-            scan = Scan(
-                scanner='tf_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=branch_id,
-                branch_commit=branch_commit,
-                scanned_at=datetime.now()
-            )
+            if 'terraform' in project_path:
 
-            if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
-                
-                tf_objects_list, result = run_tf_scan(project_path, project_id, branch_id, branch_commit)
+                scan = Scan(
+                    scanner='tf_scan',
+                    rules_version='1.0.1',
+                    project_id=project_id,
+                    branch_id=branch_id,
+                    branch_commit=branch_commit,
+                    scanned_at=datetime.now()
+                )
 
-                for tf_object in tf_objects_list:
-                    upsert_tf_obj(session, tf_object)
+                if not get_scan(session, scan.scanner, scan.rules_version, project_id, branch_id, branch_commit):
+                    
+                    tf_objects_list, result = run_tf_scan(project_path, project_id, branch_id, branch_commit)
 
-                if result == 'scanned':
-                    insert_scan(session, scan)
-            else:
-                logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
+                    for tf_object in tf_objects_list:
+                        upsert_tf_obj(session, tf_object)
+
+                    if result == 'scanned':
+                        insert_scan(session, scan)
+                else:
+                    logger.info(f"Already exist scan {scan.scanner} for {project_path}, branch {branch_name} scanned")
+        
+        logger.info(f"Project {project_path}, branch {branch_name} scanned")
+        
+        return True
+
+    except Exception as e:
+
+        logger.error(f"Failed to scan project {project_path}, branch {branch_name}: {e}")
     
-    logger.info(f"Project {project_path}, branch {branch_name} scanned")
-    
-    return 'scanned'
+        return False
 
 
 def scan_mr(session, project_id, project_path, mr_id,
             source_branch_name, source_branch_id, source_branch_commit,
             target_branch_name, target_branch_id, target_branch_commit):
+
+    try:
+
+        project_lang = get_gitlab_project_lang(project_path, target_branch_name)
+            
+        if clone_gitlab_project_code(project_path, target_branch_name, project_id, target_branch_id, target_branch_commit) :
+
+            if project_lang == 'go':
+
+                new_crit_objects = {'table_objs': {}, 'proto_objs': {}, 'client_objs': {}}
+
+                score_rules = get_score_rules(session)
+
+                clone_gitlab_project_code(project_path, source_branch_name, project_id, source_branch_id, source_branch_commit)
+
+                scan = Scan(
+                    scanner='db_scan',
+                    rules_version='1.0.2',
+                    project_id=project_id,
+                    branch_id=source_branch_id,
+                    branch_commit=source_branch_commit,
+                    scanned_at=datetime.now()
+                )
+                    
+                source_objects_list, _ = run_db_scan(project_path, project_id, source_branch_id, source_branch_commit, score_rules)
+                target_objects_list, _ = run_db_scan(project_path, project_id, target_branch_id, target_branch_commit, score_rules)
     
-    project_lang = get_gitlab_project_lang(project_path, target_branch_name)
-        
-    if clone_gitlab_project_code(project_path, target_branch_name, project_id, target_branch_id, target_branch_commit) :
+                diff_objects_db = get_diff(scan.scanner, source_objects_list, target_objects_list) 
 
-        if project_lang == 'go':
-
-            new_crit_objects = {'table_objs': {}, 'proto_objs': {}, 'client_objs': {}}
-
-            score_rules = get_score_rules(session)
-
-            clone_gitlab_project_code(project_path, source_branch_name, project_id, source_branch_id, source_branch_commit)
-
-            scan = Scan(
-                scanner='db_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=source_branch_id,
-                branch_commit=source_branch_commit,
-                scanned_at=datetime.now()
-            )
+                for table_object in diff_objects_db:
+                    _, result = upsert_table_obj(session, table_object)
+                    if result == 'inserted' and table_object.score > 0:
+                        uniq_key = f"{table_object.table_name} - {table_object.field}"
+                        new_crit_objects['table_objs'][uniq_key] = table_object
                 
-            source_objects_list, _ = run_db_scan(project_path, project_id, source_branch_id, source_branch_commit, score_rules)
-            target_objects_list, _ = run_db_scan(project_path, project_id, target_branch_id, target_branch_commit, score_rules)
-  
-            diff_objects_db = get_diff(scan.scanner, source_objects_list, target_objects_list) 
+                scan.scanned_at 
+                insert_scan(session, scan)
 
-            for table_object in diff_objects_db:
-                _, result = upsert_table_obj(session, table_object)
-                if result == 'inserted' and table_object.score > 0:
-                    uniq_key = f"{table_object.table_name} - {table_object.field}"
-                    new_crit_objects['table_objs'][uniq_key] = table_object
-            
-            scan.scanned_at 
-            insert_scan(session, scan)
+                scan = Scan(
+                    scanner='proto_scan',
+                    rules_version='1.0.2',
+                    project_id=project_id,
+                    branch_id=source_branch_id,
+                    branch_commit=source_branch_commit,
+                    scanned_at=datetime.now()
+                )
+                    
+                source_objects_list, _ = run_proto_scan(project_path, project_id, source_branch_id, source_branch_commit, score_rules)
+                target_objects_list, _ = run_proto_scan(project_path, project_id, target_branch_id, target_branch_commit, score_rules)
+    
+                diff_objects_proto = get_diff(scan.scanner, source_objects_list, target_objects_list) 
 
-            scan = Scan(
-                scanner='proto_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=source_branch_id,
-                branch_commit=source_branch_commit,
-                scanned_at=datetime.now()
-            )
+                for proto_object in diff_objects_proto:
+                    _, result = upsert_proto_obj(session, proto_object)
+                    if result == 'inserted' and proto_object.score > 0:
+                        uniq_key = f"{proto_object.package} - {proto_object.service} - {proto_object.method} - {proto_object.message} - {proto_object.field}"
+                        new_crit_objects['proto_objs'][uniq_key] = proto_object
+
+                insert_scan(session, scan)
+
+                scan = Scan(
+                    scanner='client_scan',
+                    rules_version='1.0.2',
+                    project_id=project_id,
+                    branch_id=source_branch_id,
+                    branch_commit=source_branch_commit,
+                    scanned_at=datetime.now()
+                )
+                    
+                source_objects_list, _ = run_client_scan(session, project_path, project_id, source_branch_id, source_branch_commit, score_rules)
+                target_objects_list, _ = run_client_scan(session, project_path, project_id, target_branch_id, target_branch_commit, score_rules)
+    
+                diff_objects = get_diff(scan.scanner, source_objects_list, target_objects_list) 
                 
-            source_objects_list, _ = run_proto_scan(project_path, project_id, source_branch_id, source_branch_commit, score_rules)
-            target_objects_list, _ = run_proto_scan(project_path, project_id, target_branch_id, target_branch_commit, score_rules)
-  
-            diff_objects_proto = get_diff(scan.scanner, source_objects_list, target_objects_list) 
+                # save objects to alert
+                for client_object in diff_objects:
+                    _, result = upsert_client_obj(session, client_object)   
+                    if result == 'inserted' and client_object.score > 0:
+                        uniq_key = f"{client_object.package} - {client_object.method} - {client_object.client_url}"
+                        new_crit_objects['client_objs'][uniq_key] = client_object
 
-            for proto_object in diff_objects_proto:
-                _, result = upsert_proto_obj(session, proto_object)
-                if result == 'inserted' and proto_object.score > 0:
-                    uniq_key = f"{proto_object.package} - {proto_object.service} - {proto_object.method} - {proto_object.message} - {proto_object.field}"
-                    new_crit_objects['proto_objs'][uniq_key] = proto_object
+                insert_scan(session, scan)
 
-            insert_scan(session, scan)
+                if new_crit_objects['table_objs'] or new_crit_objects['proto_objs'] or new_crit_objects['client_objs']:
 
-            scan = Scan(
-                scanner='client_scan',
-                rules_version='1.0.0',
-                project_id=project_id,
-                branch_id=source_branch_id,
-                branch_commit=source_branch_commit,
-                scanned_at=datetime.now()
-            )
-                
-            source_objects_list, _ = run_client_scan(session, project_path, project_id, source_branch_id, source_branch_commit, score_rules)
-            target_objects_list, _ = run_client_scan(session, project_path, project_id, target_branch_id, target_branch_commit, score_rules)
-  
-            diff_objects = get_diff(scan.scanner, source_objects_list, target_objects_list) 
-            
-            # save objects to alert
-            for client_object in diff_objects:
-                _, result = upsert_client_obj(session, client_object)   
-                if result == 'inserted' and client_object.score > 0:
-                    uniq_key = f"{client_object.package} - {client_object.method} - {client_object.client_url}"
-                    new_crit_objects['client_objs'][uniq_key] = client_object
+                    logger.info(f"Found {len(new_crit_objects['table_objs']) + len(new_crit_objects['proto_objs']) + len(new_crit_objects['client_objs']) } objects to alert")
 
-            insert_scan(session, scan)
+                    render_and_send_alert(project_path, source_branch_name, mr_id, new_crit_objects)
 
-            if new_crit_objects['table_objs'] or new_crit_objects['proto_objs'] or new_crit_objects['client_objs']:
+        return True
 
-                logger.info(f"Found {len(new_crit_objects['table_objs']) + len(new_crit_objects['proto_objs']) + len(new_crit_objects['client_objs']) } objects to alert")
-
-                render_and_send_alert(project_path, source_branch_name, mr_id, new_crit_objects)
-
-    return 'scanned'
+    except Exception as e:
+        logger.error(f"Failed to scan project {project_id}, mr {mr_id}: {e}")
+        return False
 
 
 def get_diff(scanner, source_objects, target_objects):

@@ -16,7 +16,3 @@ def score_field(service, object, object_type, field_name, field_type, score_rule
             return rule.risk_score
     
     return 0 
-
-
-
-

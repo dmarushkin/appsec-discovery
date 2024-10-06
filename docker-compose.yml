@@ -13,10 +13,11 @@ services:
       - GITLAB_PRIVATE_TOKEN=${GITLAB_PRIVATE_TOKEN}
       - GITLAB_PROJECTS_PREFIX=${GITLAB_PROJECTS_PREFIX}
       - MAX_WORKERS=${MAX_WORKERS}
-      - MM_ALERT_TOKEN=${MM_ALERT_TOKEN}
-      - MM_ALERT_URL=${MM_ALERT_URL}
+      - CACHE_SIZE_GB=${CACHE_SIZE_GB}
+      - MR_ALERTS=${MR_ALERTS}
       - TG_ALERT_TOKEN=${TG_ALERT_TOKEN}
       - TG_CHAT_ID=${TG_CHAT_ID}
+    restart: always
     depends_on:
       - discovery_postgres
 
@@ -32,6 +33,7 @@ services:
       - UI_ADMIN_EMAIL=${UI_ADMIN_EMAIL}
       - UI_ADMIN_PASSWORD=${UI_ADMIN_PASSWORD}
       - UI_JWT_KEY=${UI_JWT_KEY}
+    restart: always
     depends_on:
       - discovery_postgres
 
@@ -54,6 +56,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "54321:5432"
+    restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
 
