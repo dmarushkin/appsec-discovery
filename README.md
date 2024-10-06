@@ -63,7 +63,7 @@ More about concept with examples in https://hackernoon.com/building-asset-and-ri
 
 First off all you need instansce of Gitlab with you product codebase, make service account with audit role and make personal api token.
 
-Fillout .env file with your gitlab url and token, change passwords for local db and ui user, for alerts register new telegram bot or use exist one.
+Fillout .env file with your gitlab url and token, change passwords for local db and ui user, for alerts register new telegram bot or use exist one, or just leave TG args empty to only store objects.
 
 To run service localy you just need docker compose and run this command in project folder.
 
