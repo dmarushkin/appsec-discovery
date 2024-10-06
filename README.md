@@ -54,12 +54,6 @@ Objects extracted from metavars in json report:
 
 And stored in postgres database for analysis:
 
-Protobuf:
-
-![proto](https://github.com/dmarushkin/appsec-discovery/blob/main/proto.png?raw=true)
-
-Table:
-
 ![db](https://github.com/dmarushkin/appsec-discovery/blob/main/db.png?raw=true)
 
 More about concept with examples in https://hackernoon.com/building-asset-and-risk-management-on-codebase-with-semgrep
