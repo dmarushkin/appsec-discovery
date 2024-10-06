@@ -71,5 +71,7 @@ To run service localy you just need docker compose and run this command in proje
 docker-compose up --build
 ```
 
+Authorize in Rules Management UI at http://127.0.0.1/ and make some risk rules.
+
 For prod environments feel free to bake Docker images in your k8s env, use external db, production Grafana or Superset for dashboards and any kind off analytics ;)
 
