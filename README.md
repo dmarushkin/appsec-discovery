@@ -2,7 +2,7 @@
 
 Appsec Discovery service provide continuous assets and risk management based on Gitlab codebase. 
 
-It scheduled fetching information about related code projects and open merge requests from Gitlab API, cloning related code into local folders, extraction from code structured database, protobuf, graphql schemas and used api clients and methods with semgrep rules, scoring risk level for gathered objects with provided rules, storing scored objects in service database for further analytics and corellations with other appsec data in Trino and Superset, alerting about new risky objects in code projects and critical changes on diff in via Telegram or merge request comments.
+It scheduled fetching information about related code projects and open merge requests from Gitlab API, cloning code into local folders, extracting from code structured database, protobuf, graphql schemas and used api clients and methods with semgrep rules, scoring risk level for gathered objects with provided rules, storing scored objects in service database for further analytics and corellations with other appsec data in Trino and Superset, alerting about new risky objects in code projects and critical changes on diff in via Telegram or merge request comments.
 
 # Usage examples
 
