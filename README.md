@@ -48,7 +48,7 @@ For extract data from code used simple semgrep rules:
 
 ![semgrep](https://github.com/dmarushkin/appsec-discovery/blob/main/semgrep.png?raw=true)
 
-Objects extracted from metavars in json report:
+Objects extracted from metavars in semgrep json report:
 
 ![extract](https://github.com/dmarushkin/appsec-discovery/blob/main/extract.png?raw=true)
 
