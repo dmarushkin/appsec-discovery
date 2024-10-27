@@ -53,7 +53,7 @@ jobs:
 
       - name: Publish to PyPI
         run: |
-          ca appsec-discovery
+          cd appsec-discovery
           poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
           poetry build
           poetry publish
