@@ -1,6 +1,6 @@
 title: Appsec discovery
 description: Security assets and risk management service for gitlab codebase
-theme: just-the-docs
+theme: jekyll-theme-minimal
 
 url: https://dmarushkin.github.io/appsec-discovery
 
