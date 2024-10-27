@@ -8,8 +8,8 @@
             "python": {
                 "pathMappings": [
                     {
-                        "localRoot": "${workspaceFolder}",
-                        "remoteRoot": "/app"
+                        "localRoot": "${workspaceFolder}/appsec-discovery/appsec_discovery",
+                        "remoteRoot": "/app/appsec-discovery/appsec_discovery"
                     }
                 ],
                 "projectType": "general"
