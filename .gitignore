@@ -1,15 +1,66 @@
 
-# Cache
-**/__pycache__
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
 # C extensions
 *.so
 
-# Environments
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.pytest_cache/
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# dotenv
+.env
+
+# virtualenv
 venv/
 
+# intellij ide
+.idea/
+
+# auto generated docs
+doc.html
+
+# misc
+/workdir
+*.zip
+playground/
+.mypy*
+*.db
+pytest*
+
+
 # UI
-discovery_ui/npm_modules/*
+appsec-discovery-service/discovery_ui/npm_modules/*
 
 # local db and cache
-pg_data/*
+appsec-discovery-service/pg_data/*

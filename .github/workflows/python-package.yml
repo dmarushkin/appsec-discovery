@@ -1,0 +1,62 @@
+name: Build and run tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          cd appsec-discovery
+          poetry install
+  
+      - name: Run tests
+        run: |
+          cd appsec-discovery
+          poetry run pytest
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'release'
+
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+
+      - name: Publish to PyPI
+        env:
+          PYPI_TOKEN: &&&&
+        run: |
+          ca appsec-discovery
+          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+          poetry build
+          poetry publish
