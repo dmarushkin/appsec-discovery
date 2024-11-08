@@ -1,0 +1,2 @@
+from appsec_discovery.parsers.base_parser import Parser
+from appsec_discovery.parsers.parser_factory import ParserFactory

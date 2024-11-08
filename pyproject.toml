@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "appsec-discovery"
-version = "0.2.0"
+version = "0.3.0"
 license = "MIT"
 description = "Discover sensitive objects in project code"
 authors = ["Dmitrii Mariushkin <d.v.marushkin@gmail.com>"]
@@ -22,13 +22,18 @@ classifiers = [
 "Bug Tracker" = "https://github.com/dmarushkin/appsec-discovery/issues"
 
 [tool.poetry.scripts]
-semgrep-discovery = "appsec_discovery.cli:main"
+appsec-discovery = "appsec_discovery.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.12"
 click = "^8.1.7"
 semgrep = "^1.58.0"
 pydantic = "1.9.0"
+pyyaml = "^6.0.2"
+sarif-om = "^1.0.4"
+jschema-to-python = "^1.2.3"
+huggingface-hub = "^0.26.2"
+llama-cpp-python = "^0.3.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"

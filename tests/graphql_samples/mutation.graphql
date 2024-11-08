@@ -1,0 +1,40 @@
+type BusinessLoungesMutations
+
+extend type Mutation {
+    businessLounges: BusinessLoungesMutations!
+}
+
+extend type BusinessLoungesMutations {
+    createOrder(input: BusinessLoungesCreateOrderInput!): BusinessLoungesCreateOrderPayload! 
+    cancelOrder(input: BusinessLoungesCancelOrderInput!): BusinessLoungesCancelOrderPayload! 
+}
+
+input BusinessLoungesCreateOrderInput {
+    idempotencyKey: UUID!
+    businessLoungeId: UUID!
+    airportId: String!
+    personCount: Int!
+}
+
+input BusinessLoungesCancelOrderInput {
+    idempotencyKey: UUID!
+    orderNumber: String!
+}
+
+input BusinessLoungesPriceInput {
+    currencyCode: String!
+    units: Int!
+    nanos: Int!
+}
+
+type BusinessLoungesCreateOrderPayload {
+    orderNumber: String!
+    clientId: UUID!
+    personCount: Int!
+    createdAt: DateTime!
+}
+
+type BusinessLoungesCancelOrderPayload {
+    success: Boolean!
+}
+

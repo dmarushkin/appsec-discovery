@@ -58,6 +58,8 @@ playground/
 *.db
 pytest*
 
+tests/ai_samples/hf_home/*
+
 
 # UI
 appsec-discovery-service/discovery_ui/npm_modules/*

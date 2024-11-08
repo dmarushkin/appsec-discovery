@@ -1,11 +1,18 @@
 {
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}",
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.pytestArgs": [
-        "appsec-discovery/tests"
+        "tests"
     ],
     "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit",
-        "source.unusedImports": "explicit"
-    },
+        "source.organizeImports": "never",
+        "source.unusedImports": "never"
+    }
 }

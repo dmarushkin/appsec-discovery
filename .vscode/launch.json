@@ -1,19 +1,22 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
-            "name": "Docker: Python - General",
-            "type": "docker",
+            "name": "Python: Current File",
+            "type": "debugpy",
             "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "python": {
-                "pathMappings": [
-                    {
-                        "localRoot": "${workspaceFolder}/appsec-discovery/appsec_discovery",
-                        "remoteRoot": "/app/appsec-discovery/appsec_discovery"
-                    }
-                ],
-                "projectType": "general"
-            }
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "env": {"PYTHONPATH": "${cwd}/"}
+        },
+        {
+            "name": "Python: File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "justMyCode": true
         }
     ]
 }

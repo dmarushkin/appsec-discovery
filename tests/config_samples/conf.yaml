@@ -1,0 +1,37 @@
+score_tags:
+  pii:
+    high:
+      - 'firstname'
+      - 'lastname'
+      - 'phone'
+      - 'passport'
+    medium:
+      - 'address'
+    low:
+      - 'city'
+  finance:
+    high:
+      - 'pan'
+      - 'card_number'
+    medium:
+      - 'amount'
+      - 'balance'
+  auth:
+    high:
+      - 'password'
+      - 'pincode'
+      - 'codeword'
+      - 'token'
+    medium:
+      - 'login'
+  infra:
+    high:
+      - 'keycloak'
+
+exclude_scan:
+  - parser: 'terraform'
+    object_name: 'keycloak01-dc2'
+
+exclude_scoring:
+  - parser: 'terraform'
+    object_name: 'keycloak01-dc4'

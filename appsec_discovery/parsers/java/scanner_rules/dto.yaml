@@ -1,0 +1,43 @@
+rules:
+  - id: dto-javax-data-object
+    languages:
+      - java
+    severity: INFO
+    message: $OBJECT $DB_NAME $FIELD $DB_FIELD $TYPE
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              @javax.persistence.Table(..., name = $DB_NAME, ...)
+              public class $OBJECT {
+              ...
+              }
+          - pattern-inside: |
+              @Table(..., name = $DB_NAME, ...)
+              public class $OBJECT {
+              ...
+              }
+          - pattern-inside: |
+              @javax.persistence.Table(..., name = $DB_NAME, ...)
+              private class $OBJECT {
+              ...
+              }
+          - pattern-inside: |
+              @Table(..., name = $DB_NAME, ...)
+              private class $OBJECT {
+              ...
+              }
+          - pattern-inside: |
+              @javax.persistence.Table(..., name = $DB_NAME, ...)
+              class $OBJECT {
+              ...
+              }
+          - pattern-inside: |
+              @Table(..., name = $DB_NAME, ...)
+              class $OBJECT {
+              ...
+              }
+      - pattern-either:
+          - pattern: |
+              @javax.persistence.Column(..., name = $DB_FIELD, ...)
+          - pattern: |
+              @Column(..., name = $DB_FIELD, ...)

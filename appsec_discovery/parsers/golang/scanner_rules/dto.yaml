@@ -1,0 +1,20 @@
+rules:
+  - id: dto-struct-data-object
+    severity: INFO
+    languages:
+      - generic
+    patterns:
+      - pattern-inside: |
+          type $OBJECT struct {
+            ...
+          }
+      - pattern-either:
+          - pattern: |
+              $FIELD $TYPE
+      - metavariable-regex:
+          metavariable: $TYPE
+          regex: (bool|string|int|int8|int16|int32|int64|uint|uint8|uint16|uint32|uint64|time|float32|float64|byte)
+    message: $OBJECT $FIELD $TYPE
+    paths:
+      include:
+        - "*.go"

@@ -1,0 +1,8 @@
+parsers:
+  - 'swagger'
+
+ai_params:
+  model_id: "mradermacher/Llama-3.2-3B-Instruct-uncensored-GGUF"
+  gguf_file: "Llama-3.2-3B-Instruct-uncensored.Q8_0.gguf"
+  model_folder: "/app/tests/ai_samples/hf_home"
+  prompt: "You are security bot, for provided objects select only field names that contain personally identifiable information (pii), finance, authentication and other sensitive data. You return json list of selected critical field names like [\"field1\", \"field2\", ... ] or empty json list."

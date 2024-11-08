@@ -26,12 +26,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
-          cd appsec-discovery
           poetry install
   
       - name: Run tests
         run: |
-          cd appsec-discovery
           poetry run pytest
 
   publish:
@@ -53,7 +51,6 @@ jobs:
 
       - name: Publish to PyPI
         run: |
-          cd appsec-discovery
           poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
           poetry build
           poetry publish

@@ -1,0 +1,42 @@
+extend type Query {
+    abTests(filter: AbTestsFilter): AbTestsResponse!
+}
+
+type AbTestsResponse {
+    items: [AbTest!]
+}
+
+extend type Query {
+    suggestCompany(filter: SuggestCompanyRequest!): SuggestCompanyResponse!
+    suggestCompanyWithWeight(filter: SuggestCompanyWithWeightRequest!): SuggestCompanyWithWeightPayload! 
+}
+
+input SuggestCompanyRequest {
+    query: String!
+    acquiring: Boolean
+    filters: SuggestCompanyFilters
+}
+
+input SuggestCompanyFilters {
+    statusIn: [SuggestCompanyCompanyStateStatus!]
+    opfIn: [OPF!]
+}
+
+enum OPF {
+    UNKNOWN
+    LLC
+}
+
+type SuggestCompanyResponse {
+    items: [SuggestCompany!]!
+}
+
+input SuggestCompanyWithWeightRequest {
+    query: String!
+    clientId: UUID!
+}
+
+type SuggestCompanyWithWeightPayload {
+    items: [SuggestCompanyWithWeight!]!
+}
+

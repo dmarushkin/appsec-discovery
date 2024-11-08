@@ -1,0 +1,40 @@
+rules:
+  - id: graphql-schema
+    languages:
+      - generic
+    severity: ERROR
+    message: |
+      $TYPE $TYPENAME $INPUTNAME $FIELDNAME $FIELDTYPENAME
+    patterns:
+      - pattern-either:
+          - pattern-inside: |-
+              $TYPE $TYPENAME {
+                  ...
+              }
+          - pattern-inside: |-
+              $TYPE $TYPENAME @$DIRECTIVE(...) {
+                  ...
+              }
+          - pattern-inside: |-
+              $EXTEND $TYPE $TYPENAME {
+                  ...
+              }
+          - pattern-inside: |-
+              $EXTEND $TYPE $TYPENAME @$DIRECTIVE(...) {
+                  ...
+              }
+      - patterns:
+          - pattern-either:
+              - pattern: "$FIELDNAME: $FIELDTYPENAME"
+              - pattern: "$FIELDNAME (... $SOME: $INPUTNAME ...): $FIELDTYPENAME"
+          - pattern-not-inside: (...)
+      - metavariable-regex:
+          metavariable: $TYPE
+          regex: (type|input|filter|emum)
+      - metavariable-regex:
+          metavariable: $EXTEND
+          regex: (extend)
+    options:
+      generic_engine: aliengrep
+      generic_extra_word_characters: ["!", "]", "["]
+      generic_braces: [["(", ")"], ["{", "}"], ["\"", "\""], ["'", "'"]]

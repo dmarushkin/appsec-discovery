@@ -1,0 +1,77 @@
+rules:
+  - id: route-fastapi-object
+    message: fastapi route `Object $PATH, func $FUNC, type $METHOD`
+    languages: [python]
+    severity: INFO
+    pattern: |
+      $APP = fastapi.FastAPI(...)
+      ...
+      @$APP.$METHOD('$PATH')
+      def $FUNC(...):
+        ...
+  - id: route-flask-object
+    message: flask route `Object $PATH, func $FUNC, type $METHOD`
+    languages: [python]
+    severity: INFO
+    patterns:
+    - pattern-either:
+      - pattern: |
+          $APP = flask.Flask(...)
+          ...
+          @$APP.route('$PATH',methods=[...,'$TYPE',...])
+          def $FUNC(...):
+            ...
+      - pattern: |
+          $APP = flask.Flask(...)
+          ...
+          @$APP.route('$PATH')
+          def $FUNC(...):
+            ...
+  - id: route-django-object
+    message: django route `Object $PATH, func $FUNC, type $METHOD`
+    languages: [python]
+    severity: INFO
+    patterns:
+      - pattern-either:
+        - pattern: |
+            $URLPATTERNS = [..., django.urls.path($PATH, $FUNC, ...), ...]
+        - pattern: |
+            $URLPATTERNS = [..., django.conf.urls.path($PATH, $FUNC, ...), ...]
+        - pattern: |
+            $URLPATTERNS = [..., django.urls.url($PATH, $FUNC, ...), ...]
+        - pattern: |
+            $URLPATTERNS = [..., django.conf.urls.url($PATH, $FUNC, ...), ...]
+  - id: route-bottle-object
+    message: bottle route `Object $PATH, func $FUNC, type $METHOD`
+    languages: [python]
+    severity: INFO
+    patterns:
+    - pattern-either:
+      - pattern: |
+          $APP = bottle.Bottle(...)
+          ...
+          @$APP.route('$PATH',method=[...,'$METHOD',...])
+          def $FUNC(...):
+            ...
+      - pattern: |
+          $APP = bottle.Bottle(...)
+          ...
+          @$APP.route('$PATH')
+          def $FUNC(...):
+            ...
+      - pattern: |
+          @bottle.$TYPE('$PATH')
+          def $FUNC(...):
+            ...
+  - id: route-starlette-object
+    message: starlette route `Object $PATH, func $FUNC, type $METHOD`
+    languages: [python]
+    severity: INFO
+    patterns:
+    - pattern-either:
+      - pattern: |
+          $ROUTES = [..., starlette.routing.Route($PATH, $FUNC, ...), ...]
+          ...
+          $APP = starlette.applications.Starlette(...,routes=$ROUTES,...)
+      - pattern: |
+          $APP = starlette.applications.Starlette(...,routes=[..., starlette.routing.Route($PATH, $FUNC, ...), ...],...)
