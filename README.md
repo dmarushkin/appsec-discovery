@@ -8,7 +8,7 @@ Appsec Discovery service continuosly fetch changes from local Gitlab via api, cl
 
 Under the hood tool powered by Semgrep OSS engine and specialy crafted discovery rules and parsers that extract particular objects from semgrep report meta variables.
 
-# Cli mode
+## Cli mode
 
 Fast install cli tool:
 
@@ -206,7 +206,7 @@ appsec-discovery --source tests/swagger_samples --config tests/config_samples/co
    ...
 ```
 
-### Scoring object with local Llama 3.2 model
+## Scoring object with local Llama 3.2 model
 
 Replace or combine exist static keyword ruleset with LLM, fill conf.yaml with choosed LLM:
 
@@ -288,7 +288,7 @@ At first run tool with download provided model from Huggingface into local cache
 Play around with with various [models](https://huggingface.co/models?search=llama-3.2) from Huggingface and prompts for best results.
 
 
-### Integrate scans into CI/CD
+## Integrate scans into CI/CD
 
 Run scan with sarif output format:  
 
@@ -302,7 +302,7 @@ Load result reports into vuln management system like Defectdojo:
 
 ![dojo2](https://github.com/dmarushkin/appsec-discovery/blob/main/dojo2.png?raw=true)
 
-# Service mode
+## Service mode
 
 Fillout .env file with your gitlab url and token, change passwords for local db and ui user, for alerts register new telegram bot or use exist one, or just leave TG args empty to only store objects:
 
@@ -338,7 +338,7 @@ For prod environments bake Docker images in your k8s env, use external db, produ
 ![Logic schema](https://github.com/dmarushkin/appsec-discovery/blob/main/discovery.png?raw=true)
 
 
-# Usage examples
+## Usage examples
 
  - Appsec specialists can monitor codebase for critical changes and review them manualy, also sum scores for particular fields and get overall risk score for entire projects, and use it for prioritization of any kind of appsec rutines (triage vulns, plan security audits).
 
