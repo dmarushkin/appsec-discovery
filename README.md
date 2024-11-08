@@ -285,7 +285,7 @@ appsec-discovery --source tests/swagger_samples --config tests/config_samples/ai
 
 At first run tool with download provided model from Huggingface into local cache dir, for next offline scans use this dir with pre downloaded models.
 
-Play around with with various models from Huggingface and prompts for best results:
+Play around with with various [models](https://huggingface.co/models?search=llama-3.2) from Huggingface and prompts for best results.
 
 
 ### Integrate scans into CI/CD
