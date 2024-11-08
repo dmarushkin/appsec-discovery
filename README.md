@@ -331,7 +331,7 @@ docker-compose up --build
 
 Authorize in Rules Management UI at http://127.0.0.1/ and make some risk rules:
 
-![rules](https://github.com/dmarushkin/appsec-discovery/blob/main/rules.png?raw=true)
+![service_ui](https://github.com/dmarushkin/appsec-discovery/blob/main/service_ui.png?raw=true)
 
 For prod environments bake Docker images in your k8s env, use external db, production Grafana or Superset for dashboards and any kind of analytics.
 
