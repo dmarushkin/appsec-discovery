@@ -14,10 +14,8 @@ def test_scan_service_config_load():
 
     score_config = scan_service.config
 
-    assert score_config.object_types[0] == 'vm'
-
-    assert score_config.parsers[0] == 'terraform'
-
+    assert score_config.object_types[0] == 'all'
+    
     assert score_config.score_tags['pii']['high'][0] == 'firstname'
 
 

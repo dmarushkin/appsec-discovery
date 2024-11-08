@@ -27,7 +27,7 @@ def test_ai_service_config_load():
 
     assert "json list" in score_config_llama.ai_params.prompt
 
-@pytest.mark.manual
+@pytest.mark.skip(reason="Only manual use")
 def test_ai_service_update_model_in_cache_llama():
 
     test_folder = str(Path(__file__).resolve().parent)
@@ -40,7 +40,7 @@ def test_ai_service_update_model_in_cache_llama():
     
     assert 1==1
 
-@pytest.mark.manual
+@pytest.mark.skip(reason="Only manual use")
 def test_ai_service_score_objects_llama():
 
     test_folder = str(Path(__file__).resolve().parent)
@@ -62,7 +62,7 @@ def test_ai_service_score_objects_llama():
     assert scanned_objects[1].fields["Input.User.email"].severity == "medium"  
     assert "llm" in scanned_objects[1].fields["Input.User.email"].tags 
 
-@pytest.mark.manual
+@pytest.mark.skip(reason="Only manual use")
 def test_ai_service_score_objects_test():
 
     test_folder = str(Path(__file__).resolve().parent)
