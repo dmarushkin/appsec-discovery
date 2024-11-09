@@ -15,11 +15,7 @@ markdown_extensions:
   - pymdownx.superfences
   - def_list
 nav:
-  - Quik start: 
-    - 'index.md'
-  - Installation:
-    - 'install.md'
-  - Parsers:
-    - 'parsers.md'
-  - Contribution: 
-    - 'contrib.md'
+  - Quik start: 'index.md'
+  - Installation: 'install.md'
+  - Parsers: 'parsers.md'
+  - Contribution: 'contrib.md'
