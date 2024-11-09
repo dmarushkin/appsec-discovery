@@ -221,6 +221,13 @@ Load result reports into vuln management system like Defectdojo:
 
 ## Service mode
 
+Clone code to local folder:
+
+```
+git clone https://github.com/dmarushkin/appsec-discovery
+cd appsec-discovery/appsec_discovery_service
+```
+
 Fillout .env file with your gitlab url and token, change passwords for local db and ui user, for alerts register new telegram bot or use exist one, or just leave TG args empty to only store objects:
 
 ```
@@ -246,11 +253,17 @@ Run service localy with docker compose:
 docker-compose up --build
 ```
 
-Authorize in Rules Management UI at http://127.0.0.1/ and make some risk rules:
+Service will continuosly fetch new projects and MRs from Gitlab api, clone code and scan it for objects, score found ones and load into local db for any analysis.
+
+If sencitive fields in objects change on Merge requests service will alert via provided channel.
+
+To ajust default rule list authorize in Rules Management UI at http://127.0.0.1/ and make some new rules or make exclude rules for false positives:
 
 ![service_ui](https://github.com/dmarushkin/appsec-discovery/blob/main/service_ui.png?raw=true)
 
-For prod environments bake Docker images in your k8s env, use external db, production Grafana or Superset for dashboards and any kind of analytics.
+For now service does not provide any local UI for parsed and scored objects, so we recomend to use any kind of external analytic systems like Apache Superset, Grafana, Tableu etc.
+
+For prod environments bake Docker images in your k8s env, use external db.
 
 ![Logic schema](https://github.com/dmarushkin/appsec-discovery/blob/main/discovery.png?raw=true)
 
