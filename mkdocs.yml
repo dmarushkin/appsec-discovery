@@ -18,10 +18,10 @@ nav:
   - About: 
     - 'index.md'
   - Quik start: 
-    - 'index.md'
+    - 'quikstart/index.md'
   - Installation: 
-    - 'install.md'
+    - 'install/index.md'
   - Parsers: 
-    - 'parsers.md'
+    - 'parsers/index.md'
   - Contribution: 
-    - 'contrib.md'
+    - 'contrib/index.md'
