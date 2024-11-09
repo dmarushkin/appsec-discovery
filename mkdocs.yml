@@ -1,4 +1,25 @@
 site_name: Appsec Discovery
-site_url: https://dmarushkin.github.io/appsec-discovery/
 theme:
   name: material
+  palette:
+    - scheme: default
+      primary: blue
+  language: en
+  features:
+    - navigation.indexes
+    - navigation.top
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - def_list
+nav:
+  - Quik start: 
+    - 'index.md'
+  - Installation:
+    - 'install.md'
+  - Parsers:
+    - 'parsers.md'
+  - Contribution: 
+    - 'contrib.md'
