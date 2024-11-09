@@ -15,12 +15,10 @@ markdown_extensions:
   - pymdownx.superfences
   - def_list
 nav:
-  - About: 
-    - 'index.md'
   - Quik start: 
-    - 'quikstart/index.md'
-  - Installation: 
-    - 'install/index.md'
+    - 'index.md'
+  - Configure: 
+    - 'config/index.md'
   - Parsers: 
     - 'parsers/index.md'
   - Contribution: 

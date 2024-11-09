@@ -50,7 +50,7 @@ score_tags:
 Run on yor folder with swaggers, protobuf and other structured contracts in code and get parsed objects and fields marked with severity and category tags:
 
 ```
-appsec-discovery --source tests/swagger_samples
+appsec-discovery --source tests/swagger_samples --config tests/config_samples/conf.yaml
 
 - hash: e491e2905199e066aa9fb37e05b82197
   object_name: Swagger route /user (POST)
@@ -123,7 +123,7 @@ appsec-discovery --source tests/swagger_samples
    ...
 ```
 
-## Scoring object with local Llama 3.2 model
+## Score object fields with local LLM model
 
 Replace or combine exist static keyword ruleset with LLM, fill conf.yaml with choosed LLM and prompt:
 
