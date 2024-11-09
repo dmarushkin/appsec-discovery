@@ -10,97 +10,13 @@ Under the hood tool powered by Semgrep OSS engine and specialy crafted discovery
 
 ## Cli mode
 
-Fast install cli tool:
+Install cli tool:
 
 ```
 pip install appsec-discovery
 ```
 
-And clone tool repository with code samples:
-appse
-```
-git clone https://github.com/dmarushkin/appsec-discovery
-```
-
-Cli options:
-
-```
-appsec-discovery --help
-
-Usage: appsec-discovery [OPTIONS]
-
-Options:
-  --source PATH                   Source code folder  [required]
-  --config FILENAME               Scoring config file
-  --output FILENAME               Output file
-  --output-type [json|sarif|yaml]
-                                  Report type  [default: yaml]
-  --only-scored-objects           Show only scored objects
-  --help                          Show this message and exit.
-```
-Run scan on provided samples from tests:
-
-```
-appsec-discovery --source tests/swagger_samples 
-
-- hash: 6ad58c7da41fc968c1de76f9233d645d
-  object_name: Swagger route /pet/{petId} (GET)
-  object_type: route
-  parser: swagger
-  file: /swagger.yaml
-  line: 41
-  properties:
-    path:
-      prop_name: path
-      prop_value: /pet/{petId}
-    method:
-      prop_name: method
-      prop_value: get
-  fields:
-    Input.petId:
-      field_name: Input.petId
-      field_type: integer
-      file: /swagger.yaml
-      line: 41
-    Output.Pet.id:
-      field_name: Output.Pet.id
-      field_type: integer
-      file: /swagger.yaml
-      line: 41
-    Output.Pet.name:
-      field_name: Output.Pet.name
-      field_type: string
-      file: /swagger.yaml
-      line: 41
-      ...
-- hash: e491e2905199e066aa9fb37e05b82197
-  object_name: Swagger route /user (POST)
-  object_type: route
-  parser: swagger
-  file: /swagger.yaml
-  line: 63
-  properties:
-    path:
-      prop_name: path
-      prop_value: /user
-    method:
-      prop_name: method
-      prop_value: post
-  fields:
-    Input.User.id:
-      field_name: Input.User.id
-      field_type: integer
-      file: /swagger.yaml
-      line: 63
-    Input.User.email:
-      field_name: Input.User.email
-      field_type: string
-      file: /swagger.yaml
-      line: 63
-      ...
-```
-
-Score objects with provided ruleset in conf.yaml:
+Provided rules in conf.yaml or leave it empty for default list:
 
 ```
 score_tags:
@@ -131,9 +47,10 @@ score_tags:
       - 'login'
 ```
 
+Run on yor folder with swaggers, protobuf and other structured contracts in code and get parsed objects and fields marked with severity and category tags:
 
 ```
-appsec-discovery --source tests/swagger_samples --config tests/config_samples/conf.yaml
+appsec-discovery --source tests/swagger_samples
 
 - hash: e491e2905199e066aa9fb37e05b82197
   object_name: Swagger route /user (POST)
@@ -208,7 +125,7 @@ appsec-discovery --source tests/swagger_samples --config tests/config_samples/co
 
 ## Scoring object with local Llama 3.2 model
 
-Replace or combine exist static keyword ruleset with LLM, fill conf.yaml with choosed LLM:
+Replace or combine exist static keyword ruleset with LLM, fill conf.yaml with choosed LLM and prompt:
 
 ```
 ai_params:
@@ -218,7 +135,7 @@ ai_params:
   prompt: "You are security bot, for provided objects select only field names that contain personally identifiable information (pii), finance, authentication and other sensitive data. You return json list of selected critical field names like [\"field1\", \"field2\", ... ] or empty json list."
 ```
 
-Run scan with new settings:
+Run scan with new settings and get objects and fields severity from local AI engine:
 
 ```
 appsec-discovery --source tests/swagger_samples --config tests/config_samples/ai_conf_llama.yaml
