@@ -52,7 +52,7 @@ score_tags:
       - 'login'
 ```
 
-Run on yor folder with swaggers, protobuf and other structured contracts in code and get parsed objects and fields marked with severity and category tags:
+Run on code project folder with swaggers, protobuf and other structured contracts in code and get parsed objects and fields marked with severity and category tags:
 
 ```
 appsec-discovery --source tests/swagger_samples
