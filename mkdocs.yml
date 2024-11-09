@@ -19,6 +19,9 @@ nav:
     - 'index.md'
   - Quik start: 
     - 'index.md'
-  - Installation: 'install.md'
-  - Parsers: 'parsers.md'
-  - Contribution: 'contrib.md'
+  - Installation: 
+    - 'install.md'
+  - Parsers: 
+    - 'parsers.md'
+  - Contribution: 
+    - 'contrib.md'
