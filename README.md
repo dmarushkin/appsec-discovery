@@ -253,9 +253,9 @@ Run service localy with docker compose:
 docker-compose up --build
 ```
 
-Service will continuosly fetch new projects and MRs from Gitlab api, clone code and scan it for objects, score found ones and load into local db for any analysis.
+Service will continuosly fetch new projects and MRs for provided prefixes from Gitlab api, clone code and scan it for objects, score found ones and save into local postgres db for any analysis.
 
-If sencitive fields in objects change on Merge requests service will alert via provided channel.
+If sensitive fields in objects added on Merge requests service will alert via provided channel.
 
 To ajust default rule list authorize in Rules Management UI at http://127.0.0.1/ and make some new rules or make exclude rules for false positives:
 
