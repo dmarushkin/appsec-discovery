@@ -16,7 +16,7 @@ markdown_extensions:
   - def_list
 nav:
   - About: 
-    - 'about.md'
+    - 'index.md'
   - Quik start: 
     - 'quikstart/index.md'
   - Installation: 
