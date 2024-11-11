@@ -108,25 +108,62 @@ appsec-discovery --source tests/swagger_samples
       tags:
       - pii
       ...
-- hash: 2e20a348a612aa28d24c1bd0498eebf0
-  object_name: Swagger route /user/login (GET)
-  object_type: route
-  parser: swagger
+- hash: 9e167a92c3a4ecb34a52a148775b3dba
+  object_name: Rpc /com.surajgharat.practice.grpc.service.SumService/Sum
+  object_type: rpc
+  parser: protobuf
+  file: test2.proto
+  line: 1
+  properties: {}
+  fields:
+    input.SumInput.n1:
+      field_name: SumInput.n1
+      field_type: int32
+      file: test2.proto
+      line: 1
+    input.SumInput.n2:
+      field_name: SumInput.n2
+      field_type: int32
+      file: test2.proto
+      line: 2
+    output.SumOutput.result:
+      field_name: SumOutput.result
+      field_type: int32
+      file: test2.proto
+      line: 1
+   ...
+- hash: 8a878eb2050c855faab96d2e52cc7cf8
+  object_name: Query MgmQueries.promoterInfo
+  object_type: query
+  parser: graphql
   severity: high
   tags:
-  - auth
-  file: /swagger.yaml
-  line: 83
-  ...
+  - pii
+  file: query.graphql
+  line: 143
+  properties: {}
   fields:
-    Input.password:
-      field_name: Input.password
-      field_type: string
-      file: /swagger.yaml
-      line: 83
+    input.MgmPromoterInfoInput.link:
+      field_name: input.MgmPromoterInfoInput.link
+      field_type: String
+      file: query.graphql
+      line: 291
+    output.MgmPromoterInfoPayload.firstName:
+      field_name: output.MgmPromoterInfoPayload.firstName
+      field_type: String
+      file: query.graphql
+      line: 342
       severity: high
       tags:
-      - auth
+      - pii
+    output.MgmPromoterInfoPayload.lastName:
+      field_name: output.MgmPromoterInfoPayload.lastName
+      field_type: String
+      file: query.graphql
+      line: 365
+      severity: high
+      tags:
+      - pii
    ...
 ```
 
