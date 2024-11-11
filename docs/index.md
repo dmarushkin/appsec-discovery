@@ -27,12 +27,14 @@ Provided rules in conf.yaml or leave it empty for default list:
 score_tags:
   pii:
     high:
-      - '(first_name|firstname)'
+      - 'full_name'
+      - 'first_name'
       - 'last_name'
       - 'phone'
       - 'passport'
     medium:
       - 'address'
+      - 'email'
     low:
       - 'city'
   finance:

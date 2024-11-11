@@ -1,42 +1,27 @@
-extend type Query {
-    abTests(filter: AbTestsFilter): AbTestsResponse!
-}
-
-type AbTestsResponse {
-    items: [AbTest!]
-}
+type MgmQueries
 
 extend type Query {
-    suggestCompany(filter: SuggestCompanyRequest!): SuggestCompanyResponse!
-    suggestCompanyWithWeight(filter: SuggestCompanyWithWeightRequest!): SuggestCompanyWithWeightPayload! 
+    mgm: MgmQueries!
 }
 
-input SuggestCompanyRequest {
-    query: String!
-    acquiring: Boolean
-    filters: SuggestCompanyFilters
+extend type MgmQueries  {
+    offer(input: MgmOfferInput!): MgmOfferPayload! 
+    promoterInfo(input: MgmPromoterInfoInput!): MgmPromoterInfoPayload! 
 }
 
-input SuggestCompanyFilters {
-    statusIn: [SuggestCompanyCompanyStateStatus!]
-    opfIn: [OPF!]
+input MgmOfferInput {
+    link: String!
 }
 
-enum OPF {
-    UNKNOWN
-    LLC
+input MgmPromoterInfoInput {
+    link: String!
 }
 
-type SuggestCompanyResponse {
-    items: [SuggestCompany!]!
+type MgmPromoterInfoPayload {
+    firstName: String!
+    lastName: String!
 }
 
-input SuggestCompanyWithWeightRequest {
-    query: String!
-    clientId: UUID!
+type MgmOfferPayload {
+    offer: MgmOffer!
 }
-
-type SuggestCompanyWithWeightPayload {
-    items: [SuggestCompanyWithWeight!]!
-}
-

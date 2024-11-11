@@ -1,6 +1,60 @@
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 
+default_rules = {
+    'pii': {
+       'high': [
+          'full_name',
+          'fullname',
+          'first_name',
+          'firstname',
+          'last_name',
+          'lastname',
+          'phone',
+          'passport',
+          'ssn'
+       ],
+       'medium': [
+          'address',
+          'email'
+       ],
+       'low': [
+          'city'
+       ]
+    },
+    'finance': {
+       'high': [
+          'pan',
+          'card_number'
+          'cardnumber'
+       ],
+       'medium': [
+          'account_number',
+          'accountnumber',
+          'balance',
+          'amount'
+       ],
+       'low': [
+       ]
+    },
+    'auth': {
+       'high': [
+          'password',
+          'pincode',
+          'codeword',
+          'token'
+       ],
+       'medium': [
+          'login',
+          'email',
+          'phone',
+          'username',
+       ],
+       'low': [
+       ]
+    },
+}
+
 class ExcludeScan(BaseModel):
     file: Optional[str]
     parser: Optional[str]
@@ -27,7 +81,7 @@ class AiParams(BaseModel):
 class ScoreConfig(BaseModel):
     parsers: List[str] = ['all']
     object_types: List[str] = ['all']
-    score_tags: Dict[str,Dict[str,List[str]]] = {}
+    score_tags: Dict[str,Dict[str,List[str]]] = default_rules
     ai_params: Optional[AiParams]
     exclude_scan: List[ExcludeScan] = []
     exclude_scoring: List[ExcludeScoring] = []

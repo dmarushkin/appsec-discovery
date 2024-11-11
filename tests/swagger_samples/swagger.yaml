@@ -156,7 +156,10 @@ components:
         email:
           type: string
           example: john@email.com
-        password:
+        inn:
+          type: string
+          example: '12345'
+        snils:
           type: string
           example: '12345'
         phone:
@@ -167,6 +170,12 @@ components:
           description: User Status
           format: int32
           example: 1
+        TShortSize:
+          type: string
+          example: '12345'
+        document_number:
+          type: string
+          example: '12345'
     Tag:
       type: object
       properties:

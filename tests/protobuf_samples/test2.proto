@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.surajgharat.practice.grpc.service;
+
+service SumService {
+  rpc Sum(SumInput) returns (SumOutput) {}
+}
+
+message SumInput {
+  int32 n1 = 1;
+  int32 n2 = 2;
+}
+
+message SumOutput { int32 result = 1; }

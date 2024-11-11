@@ -31,7 +31,7 @@ def test_ai_service_config_load():
 def test_ai_service_update_model_in_cache_llama():
 
     test_folder = str(Path(__file__).resolve().parent)
-    config_file = os.path.join(test_folder, "config_samples/ai_conf_llama.yaml")
+    config_file = os.path.join(test_folder, "config_samples/ai_conf_llama_8b.yaml")
 
     with open(config_file, 'r') as conf_file:
         scan_service = ScanService(source_folder="some", conf_file=conf_file)
@@ -44,7 +44,7 @@ def test_ai_service_update_model_in_cache_llama():
 def test_ai_service_score_objects_llama():
 
     test_folder = str(Path(__file__).resolve().parent)
-    config_file = os.path.join(test_folder, "config_samples/ai_conf_llama.yaml")
+    config_file = os.path.join(test_folder, "config_samples/ai_conf_llama_8b.yaml")
 
     samples_folder = os.path.join(test_folder, "ai_samples/code_objects")
 
@@ -66,7 +66,7 @@ def test_ai_service_score_objects_llama():
 def test_ai_service_score_objects_test():
 
     test_folder = str(Path(__file__).resolve().parent)
-    config_file = os.path.join(test_folder, "config_samples/ai_conf_llama.yaml")
+    config_file = os.path.join(test_folder, "config_samples/ai_conf_llama_8b.yaml")
 
     samples_folder = os.path.join(test_folder, "ai_samples/code_objects")
 

@@ -9,6 +9,7 @@ import logging
 from appsec_discovery.models import CodeObject, ExcludeScoring, AiParams
 
 severities_int = {'critical': 5, 'high': 4, 'medium': 3, 'low': 2, 'info': 1}
+skip_ai = ['created_at', 'updated_at', 'deleted_at']
 
 logger = logging.getLogger(__name__)
 
@@ -41,28 +42,33 @@ class AiService:
                 object_to_score: Dict[str: List[str]] = {'field_names': []}
                 
                 for field in object.fields.values() :
-                    object_to_score['field_names'].append(field.field_name)
+
+                    # no ai for already sensitive
+                    if not field.severity \
+                      and not ( field.field_name.split('.')[-1] in skip_ai \
+                            or field.field_name.lower().endswith('id') \
+                            or 'status' not in field.field_name.split('.')[-1].lower() ):
+                        object_to_score['field_names'].append(field.field_name.split('.')[-1])
                 
                 object_text = f"object: {object.object_name}\n\n" + yaml.safe_dump(object_to_score)
 
-                response = llm.create_chat_completion(
-                    messages = [
-                        {"role": "system", "content": self.system_prompt},
-                        {
-                            "role": "user",
-                            "content": object_text
-                        }
-                    ]
-                )
-
-                answer = response['choices'][0]["message"]["content"]
-
                 scored_list = []
 
-                if '[' in answer and ']' in answer:
+                if object_to_score['field_names'] :
+                
+                    response = llm.create_chat_completion(
+                        messages = [
+                            {"role": "system", "content": self.system_prompt},
+                            {"role": "user", "content": object_text },
+                        ]
+                    )
 
-                    json_txt = "[" + answer.split('[')[1].split(']')[0] + "]"
-                    scored_list = json.loads(json_txt)
+                    answer = response['choices'][0]["message"]["content"]
+
+                    if '[' in answer and ']' in answer:
+
+                        json_txt = "[" + answer.split('[')[1].split(']')[0] + "]"
+                        scored_list = json.loads(json_txt)
 
                 scored_fields = {}
 
@@ -71,7 +77,7 @@ class AiService:
 
                 for field_name, field in object.fields.items():
 
-                    if field.field_name in scored_list:
+                    if field.field_name.split('.')[-1] in scored_list:
 
                         excluded = False
 

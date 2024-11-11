@@ -1,0 +1,21 @@
+package search;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "io.protostuff.example.search";
+
+message SearchRequest {
+    required string keyword = 1;
+}
+
+message ExtendedSearchRequest {
+    repeated string keywords = 1;
+}
+
+message SearchResponse {
+    repeated string result = 1;
+}
+
+service SearchService {
+    rpc search (SearchRequest) returns (SearchResponse);
+    rpc extendedSearch (ExtendedSearchRequest) returns (SearchResponse);
+}
