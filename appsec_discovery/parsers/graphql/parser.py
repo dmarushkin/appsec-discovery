@@ -11,12 +11,12 @@ logger = logging.getLogger(__name__)
 class GraphqlParser(Parser):
 
     def find_graphql_files(self, root_dir):
-        proto_files = []
+        graphql_files = []
         for root, _, files in os.walk(root_dir):
             for file in files:
                 if file.endswith('.graphql'):
-                    proto_files.append(os.path.join(root, file))
-        return proto_files
+                    graphql_files.append(os.path.join(root, file))
+        return sorted(graphql_files)
 
 
     def run_scan(self) -> List[CodeObject]:

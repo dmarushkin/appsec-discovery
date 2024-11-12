@@ -59,8 +59,6 @@ Run on code project folder with swaggers, protobuf and other structured contract
 ```
 appsec-discovery --source tests/swagger_samples
 
-appsec-discovery --source tests/swagger_samples
-
 - hash: 40140abef3b5f45d447d16e7180cc231
   object_name: Route /user/login (GET)
   object_type: route

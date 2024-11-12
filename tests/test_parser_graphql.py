@@ -26,6 +26,6 @@ def test_parser_graphql_parse_folder():
 
     assert len(results) == 4
 
-    assert results[0].object_name ==  'Query MgmQueries.offer'
+    assert results[0].object_name ==  'Mutation BusinessLoungesMutations.createOrder'
 
-    assert 'input.BusinessLoungesCreateOrderInput.idempotencyKey' in results[2].fields
+    assert 'input.BusinessLoungesCancelOrderInput.idempotencyKey' in results[1].fields.keys()

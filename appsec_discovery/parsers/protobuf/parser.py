@@ -17,7 +17,7 @@ class ProtobufParser(Parser):
             for file in files:
                 if file.endswith('.proto'):
                     proto_files.append(os.path.join(root, file))
-        return proto_files
+        return sorted(proto_files)
 
 
     def run_scan(self) -> List[CodeObject]:

@@ -42,17 +42,17 @@ def test_scan_service_run_scanners():
    
     # 1st scored
 
-    assert scanned_objects[0].severity is None 
+    assert scanned_objects[6].severity is None 
 
-    assert scanned_objects[12].severity is not None 
+    assert scanned_objects[16].severity is not None 
 
-    assert scanned_objects[12].severity == 'high'
+    assert scanned_objects[16].severity == 'high'
 
-    assert scanned_objects[12].properties['path'].prop_value == '/user'
+    assert scanned_objects[16].properties['path'].prop_value == '/user'
 
-    assert 'auth' in scanned_objects[12].tags
+    assert 'auth' in scanned_objects[16].tags
 
-    assert not scanned_objects[12].fields['output.id'].severity
+    assert not scanned_objects[16].fields['output.id'].severity
 
-    assert scanned_objects[12].fields['input.firstName'].severity == 'high'
+    assert scanned_objects[16].fields['input.firstName'].severity == 'high'
 

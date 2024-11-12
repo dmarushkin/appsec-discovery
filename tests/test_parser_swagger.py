@@ -27,7 +27,7 @@ def test_parser_swagger_parse_folder():
     assert len(results) == 27 
 
     assert results[0].parser == 'swagger'
-    assert results[0].object_name == 'Route /pet (PUT)'
+    assert results[0].object_name == 'Route /users (GET)'
 
     assert results[-1].parser == 'swagger'
     assert results[-1].object_name == 'Route /users/{uuid} (PUT)'
