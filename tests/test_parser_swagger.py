@@ -24,11 +24,11 @@ def test_parser_swagger_parse_folder():
 
     results = pr.run_scan()
 
-    assert len(results) == 3 
+    assert len(results) == 27 
 
     assert results[0].parser == 'swagger'
-    assert results[0].object_name == 'Swagger route /pet/{petId} (GET)'
+    assert results[0].object_name == 'Route /pet (PUT)'
 
     assert results[-1].parser == 'swagger'
-    assert results[-1].object_name == 'Swagger route /user/login (GET)'
-    assert results[-1].fields['Input.password'].field_name == 'Input.password'
+    assert results[-1].object_name == 'Route /users/{uuid} (PUT)'
+    assert results[-1].fields['path.param.uuid'].field_name == 'path.param.uuid'

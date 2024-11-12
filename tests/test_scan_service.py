@@ -44,15 +44,15 @@ def test_scan_service_run_scanners():
 
     assert scanned_objects[0].severity is None 
 
-    assert scanned_objects[1].severity is not None 
+    assert scanned_objects[12].severity is not None 
 
-    assert scanned_objects[1].severity == 'high'
+    assert scanned_objects[12].severity == 'high'
 
-    assert scanned_objects[1].properties['path'].prop_value == '/user'
+    assert scanned_objects[12].properties['path'].prop_value == '/user'
 
-    assert 'auth' in scanned_objects[1].tags
+    assert 'auth' in scanned_objects[12].tags
 
-    assert not scanned_objects[1].fields['Input.User.TShortSize'].severity
+    assert not scanned_objects[12].fields['output.id'].severity
 
-    assert scanned_objects[1].fields['Input.User.email'].severity == 'medium'
+    assert scanned_objects[12].fields['input.firstName'].severity == 'high'
 

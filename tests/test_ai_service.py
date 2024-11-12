@@ -102,7 +102,7 @@ def test_ai_service_score_objects_test():
         documet_number
     '''
 
-    prompt = ''' You are security bot, for provided objects select only field names that contain personally identifiable information (pii), finance, authentication and other sensitive data. You return just json list of selected field names like ["field1', "field2", ... ] or empty json list.'''
+    prompt = ''' You are security bot, for provided objects select only field names that contain personally identifiable information (pii), finance, authentication and other sensitive data. You return just list of selected field names like ["field_name", "field_name2", ... ] or empty list [].'''
 
 
     response = llm.create_chat_completion(

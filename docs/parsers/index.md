@@ -7,9 +7,108 @@ hide:
 
 ## Swagger
 
-  file example
+Swagger file:
+
+```
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  ...
+paths:
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+
+```
   
-  parsed object
+Scanned structure:
+
+```
+appsec-discovery --source tests/swagger_samples
+
+- hash: 40140abef3b5f45d447d16e7180cc231
+  object_name: Route /user/login (GET)
+  object_type: route
+  parser: swagger
+  severity: high
+  tags:
+  - auth
+  file: swagger.yaml
+  line: 1
+  properties:
+    path:
+      prop_name: path
+      prop_value: /user/login
+      severity: medium
+      tags:
+      - auth
+    method:
+      prop_name: method
+      prop_value: GET
+  fields:
+    query.param.username:
+      field_name: query.param.username
+      field_type: string
+      file: swagger.yaml
+      line: 1
+      severity: medium
+      tags:
+      - auth
+    query.param.password:
+      field_name: query.param.password
+      field_type: string
+      file: swagger.yaml
+      line: 1
+      severity: high
+      tags:
+      - auth
+    output:
+      field_name: output
+      field_type: string
+      file: swagger.yaml
+      line: 1
+
+```
 
 
 ## Protobuf

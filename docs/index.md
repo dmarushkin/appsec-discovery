@@ -59,54 +59,49 @@ Run on code project folder with swaggers, protobuf and other structured contract
 ```
 appsec-discovery --source tests/swagger_samples
 
-- hash: e491e2905199e066aa9fb37e05b82197
-  object_name: Swagger route /user (POST)
+appsec-discovery --source tests/swagger_samples
+
+- hash: 40140abef3b5f45d447d16e7180cc231
+  object_name: Route /user/login (GET)
   object_type: route
   parser: swagger
   severity: high
   tags:
-  - pii
   - auth
-  file: /swagger.yaml
-  line: 63
+  file: swagger.yaml
+  line: 1
   properties:
     path:
       prop_name: path
-      prop_value: /user
+      prop_value: /user/login
+      severity: medium
+      tags:
+      - auth
     method:
       prop_name: method
-      prop_value: post
+      prop_value: GET
   fields:
-    ...
-    Output.User.id:
-      field_name: Output.User.id
-      field_type: integer
-      file: /swagger.yaml
-      line: 63
-    Output.User.lastName:
-      field_name: Output.User.lastName
+    query.param.username:
+      field_name: query.param.username
       field_type: string
-      file: /swagger.yaml
-      line: 63
-      severity: high
+      file: swagger.yaml
+      line: 1
+      severity: medium
       tags:
-      - pii
-    Output.User.password:
-      field_name: Output.User.password
+      - auth
+    query.param.password:
+      field_name: query.param.password
       field_type: string
-      file: /swagger.yaml
-      line: 63
+      file: swagger.yaml
+      line: 1
       severity: high
       tags:
       - auth
-    Output.User.phone:
-      field_name: Output.User.phone
+    output:
+      field_name: output
       field_type: string
-      file: /swagger.yaml
-      line: 63
-      severity: high
-      tags:
-      - pii
+      file: swagger.yaml
+      line: 1
       ...
 - hash: 9e167a92c3a4ecb34a52a148775b3dba
   object_name: Rpc /com.surajgharat.practice.grpc.service.SumService/Sum
