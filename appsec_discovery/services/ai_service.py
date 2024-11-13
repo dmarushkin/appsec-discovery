@@ -1,4 +1,4 @@
-from llama_cpp import Llama
+from llama_cpp import Llama, LlamaRAMCache
 import re
 
 from typing import List, Dict
@@ -33,8 +33,6 @@ class AiService:
                 object_to_score: Dict[str: List[str]] = {'field_names': []}
                 
                 scored_list = []
-
-
 
                 for field in object.fields.values() :
 
