@@ -1,6 +1,4 @@
 from llama_cpp import Llama
-import json
-import yaml
 import re
 
 from typing import List, Dict
@@ -30,25 +28,34 @@ class AiService:
 
         try:
 
-            llm = Llama.from_pretrained(
-                repo_id=self.model_id,
-                filename=self.gguf_file,
-                verbose=False,
-                cache_dir=self.model_folder
-            )
-
             for object in code_objects:
 
                 object_to_score: Dict[str: List[str]] = {'field_names': []}
                 
                 scored_list = []
 
+
+
                 for field in object.fields.values() :
+
+                    if field.field_name.split('.')[0].lower() in ['input','output'] and len(field.field_name.split('.')) > 1 :
+                        field_name = ".".join(field.field_name.split('.')[1:])
+                    else:
+                        field_name = field.field_name
+
+                    llm = Llama.from_pretrained(
+                        repo_id=self.model_id,
+                        filename=self.gguf_file,
+                        verbose=False,
+                        cache_dir=self.model_folder,
+                        max_tokens=5,
+                        seed=112358,
+                    )
 
                     quastion = f'''
                     For object: {object.object_name}
                     
-                    Field name: {field.field_name}
+                    Field name: {field_name}
 
                     Can contain sensitive data? Answer only 'yes' or 'no',
                     '''
@@ -60,10 +67,15 @@ class AiService:
                         ]
                     )
 
+                    llm.reset()
+                    llm.set_cache(None)
+
                     answer = response['choices'][0]["message"]["content"]
 
+                    logger.info(f"For {object.object_name} and {field.field_name} llm answer is {answer}")
+
                     if 'yes' in answer.lower():
-                        scored_list.append(field.field_name)
+                        scored_list.append(field.field_name)                       
 
                 scored_fields = {}
 

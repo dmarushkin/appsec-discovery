@@ -1,5 +1,6 @@
 import click
-
+from click_loglevel import LogLevel
+import logging
 from appsec_discovery.services import ScanService, ReportService
 
 @click.command()
@@ -8,7 +9,11 @@ from appsec_discovery.services import ScanService, ReportService
 @click.option('--output', required=False, show_default=True, default=None, type=click.File('w'), help='Output file')
 @click.option('--output-type', required=False, show_default=True, default='yaml', type=click.Choice(['json', 'sarif', 'yaml'], case_sensitive=False), help='Report type')
 @click.option("--only-scored-objects", is_flag=True, show_default=True, default=False, help="Show only scored objects")
-def main(source, config, output, output_type, only_scored_objects):
+@click.option('-v', '--verbose', is_flag=True, help='Enables verbose mode')
+def main(source, config, output, output_type, only_scored_objects, verbose):
+
+    if verbose:
+        logging.basicConfig(format="[%(levelname)-8s] %(message)s", level=15)
 
     scan_service = ScanService(source_folder=source, conf_file=config, only_scored_objects=only_scored_objects)
     scanned_objects = scan_service.scan_folder()

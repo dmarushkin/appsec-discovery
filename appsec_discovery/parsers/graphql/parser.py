@@ -41,15 +41,18 @@ class GraphqlParser(Parser):
 
         return objects_list
 
-    def resolve_fields(self, type_name, types_dict):
+    def resolve_fields(self, type_name, types_dict, depth):
         
         resolved_fields = {}
+
+        if depth > 10 :
+            return resolved_fields
 
         for field_name, field in types_dict[type_name]['fields'].items():
 
             if field['output'] in types_dict and types_dict[field['output']]['fields'] :
 
-                out_resolved = self.resolve_fields(field['output'], types_dict)
+                out_resolved = self.resolve_fields(field['output'], types_dict, depth + 1)
 
                 for out_field_name, out_field in out_resolved.items():
                     resolved_fields[f"{type_name}.{field_name}.{field['output']}.{out_field_name}"] = out_field
@@ -154,7 +157,7 @@ class GraphqlParser(Parser):
 
                             if input_type in types and types[input_type]['fields']:
 
-                                inputs_resolved = self.resolve_fields(input_type, types)
+                                inputs_resolved = self.resolve_fields(input_type, types, 0)
 
                                 for input_resolved_name, input_resolved in inputs_resolved.items():
 
@@ -169,7 +172,7 @@ class GraphqlParser(Parser):
 
                         if field['output'] in types and types[field['output']]['fields'] :
 
-                            outputs_resolved = self.resolve_fields(field['output'], types)
+                            outputs_resolved = self.resolve_fields(field['output'], types, 0)
 
                             for output_resolved_name, output_resolved in outputs_resolved.items():
 

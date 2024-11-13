@@ -107,7 +107,7 @@ def test_ai_service_score_objects_test():
     question = '''
     For object: Client
     
-    Field name: passport_scan_file
+    Field name: inn
 
     Can contain sensitive data? Answer only 'yes' or 'no',
     '''

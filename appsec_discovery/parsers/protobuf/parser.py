@@ -42,11 +42,14 @@ class ProtobufParser(Parser):
 
         return objects_list
 
-    def resolve_fields(self, type_name, messages, file):
+    def resolve_fields(self, type_name, messages, file, depth):
         
         resolved_fields = {}
 
         local_messages = {}
+
+        if depth > 5 :
+            return {}
 
         for el in messages[type_name].elements:       
             if isinstance(el, Message) and el.name not in local_messages:
@@ -56,13 +59,13 @@ class ProtobufParser(Parser):
             if isinstance(el, Field) and el.name not in resolved_fields:
 
                 if el.type in messages:
-                    resolved_local_fields = self.resolve_fields(el.type, messages, file)
+                    resolved_local_fields = self.resolve_fields(el.type, messages, file, depth + 1)
 
                     for field_name, field in resolved_local_fields.items():
                         resolved_fields[f"{type_name}.{el.name}.{field_name}"] = field
 
                 elif el.type in local_messages:
-                    resolved_local_fields = self.resolve_fields(el.type, local_messages, file)
+                    resolved_local_fields = self.resolve_fields(el.type, local_messages, file, depth + 1)
 
                     for field_name, field in resolved_local_fields.items():
                         resolved_fields[f"{type_name}.{el.name}.{field_name}"] = field
@@ -142,7 +145,7 @@ class ProtobufParser(Parser):
                     )
 
                     if method['input'] in package['messages']:
-                        input_fields = self.resolve_fields(method['input'], package['messages'], package['file'])
+                        input_fields = self.resolve_fields(method['input'], package['messages'], package['file'], 0)
 
                         for field_name, field in input_fields.items():    
                             code_object.fields[f"input.{field_name}"] = field
@@ -155,7 +158,7 @@ class ProtobufParser(Parser):
                         )
 
                     if method['output'] in package['messages']:
-                        output_fields = self.resolve_fields(method['output'], package['messages'], package['file'])
+                        output_fields = self.resolve_fields(method['output'], package['messages'], package['file'], 0)
 
                         for field_name, field in output_fields.items():    
                             code_object.fields[f"output.{field_name}"] = field

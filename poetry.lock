@@ -217,6 +217,20 @@ files = [
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "click-loglevel"
+version = "0.5.0"
+description = "Log level parameter type for Click"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "click-loglevel-0.5.0.tar.gz", hash = "sha256:fcc98a136a96479b4768494df25017114ba1cb525dac0bed619209b3578fd4f3"},
+    {file = "click_loglevel-0.5.0-py3-none-any.whl", hash = "sha256:897070fd4bf5b503edb5a1ecc0551448647901f4fac83a01c9f00aa28ad86d60"},
+]
+
+[package.dependencies]
+click = ">=8.0"
+
+[[package]]
 name = "click-option-group"
 version = "0.5.6"
 description = "Option groups missing in Click"
@@ -2142,4 +2156,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d8c485b494aa8d6536cf210c4ba8b221464b8077582433f87135fee78ce9027a"
+content-hash = "2a85f3e4e2395321cef8d3005186a80a166cc1c8ba929dc70f40c64bbe44b0c7"

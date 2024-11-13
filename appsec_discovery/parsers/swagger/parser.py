@@ -48,9 +48,12 @@ class SwaggerParser(Parser):
 
         return objects_list
 
-    def resolve_fields(self, type, object, file):
+    def resolve_fields(self, type, object, file, depth):
         
         resolved_fields = {}
+
+        if depth > 10:
+            return resolved_fields
 
         # Object
         if hasattr(object, 'properties'):
@@ -68,7 +71,7 @@ class SwaggerParser(Parser):
                 
                 else:
 
-                    res_fields = self.resolve_fields(prop.name, prop.schema, file)
+                    res_fields = self.resolve_fields(prop.name, prop.schema, file, depth + 1)
 
                     for field_name, field_data in res_fields.items():
                         resolved_fields[f"{type}.{field_name}"] = field_data
@@ -77,7 +80,7 @@ class SwaggerParser(Parser):
         # List 
         elif hasattr(object, 'items'):
 
-            res_fields = self.resolve_fields('', object.items, file)
+            res_fields = self.resolve_fields('', object.items, file, depth + 1)
 
             for field_name, field_data in res_fields.items():
                 field_name = field_name.strip('.')
@@ -139,7 +142,7 @@ class SwaggerParser(Parser):
                     if method.request_body :
                         for content in method.request_body.content :
 
-                            res = self.resolve_fields('input', content.schema, file)
+                            res = self.resolve_fields('input', content.schema, file, 0)
 
                             for field_name, field in res.items():
                                 code_object.fields[field_name] = field
@@ -149,7 +152,7 @@ class SwaggerParser(Parser):
                             if response.content:
                                 for content in response.content :
 
-                                    res = self.resolve_fields('output', content.schema, file)
+                                    res = self.resolve_fields('output', content.schema, file, 0)
 
                                     for field_name, field in res.items():
                                         code_object.fields[field_name] = field
