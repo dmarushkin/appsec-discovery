@@ -25,7 +25,7 @@ def test_ai_service_config_load():
 
     assert score_config_llama.ai_params.model_id == "mradermacher/Llama-3.2-3B-Instruct-uncensored-GGUF"
 
-    assert "json list" in score_config_llama.ai_params.prompt
+    assert "security bot" in score_config_llama.ai_params.prompt
 
 @pytest.mark.skip(reason="Only manual use")
 def test_ai_service_update_model_in_cache_llama():
