@@ -102,8 +102,7 @@ def test_ai_service_score_objects_test():
         documet_number
     '''
 
-    system_prompt = ''' You are security bot, for provided objects select only field names that contain personally identifiable information, 
-                        passport or other person identification document numbers, finance or payment information, authentication and other sensitive data. '''
+    system_prompt = ''' You are security bot, for provided objects select only field names that contain personally identifiable information, passport or other person identification document numbers, finance or payment information, authentication and other sensitive data. '''
 
     question = '''
     For object: Client
