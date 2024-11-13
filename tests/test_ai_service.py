@@ -40,7 +40,7 @@ def test_ai_service_update_model_in_cache_llama():
     
     assert 1==1
 
-@pytest.mark.skip(reason="Only manual use")
+# @pytest.mark.skip(reason="Only manual use")
 def test_ai_service_score_objects_llama():
 
     test_folder = str(Path(__file__).resolve().parent)
@@ -62,7 +62,7 @@ def test_ai_service_score_objects_llama():
     assert scanned_objects[1].fields["Input.User.email"].severity == "medium"  
     assert "llm" in scanned_objects[1].fields["Input.User.email"].tags 
 
-@pytest.mark.skip(reason="Only manual use")
+# @pytest.mark.skip(reason="Only manual use")
 def test_ai_service_score_objects_test():
 
     test_folder = str(Path(__file__).resolve().parent)
@@ -102,15 +102,24 @@ def test_ai_service_score_objects_test():
         documet_number
     '''
 
-    prompt = ''' You are security bot, for provided objects select only field names that contain personally identifiable information (pii), finance, authentication and other sensitive data. You return just list of selected field names like ["field_name", "field_name2", ... ] or empty list [].'''
+    system_prompt = ''' You are security bot, for provided objects select only field names that contain personally identifiable information, 
+                        passport or other person identification document numbers, finance or payment information, authentication and other sensitive data. '''
+
+    question = '''
+    For object: Client
+    
+    Field name: passport_scan_file
+
+    Can contain sensitive data? Answer only 'yes' or 'no',
+    '''
 
 
     response = llm.create_chat_completion(
       messages = [
-          {"role": "system", "content": prompt},
+          {"role": "system", "content": system_prompt},
           {
               "role": "user",
-              "content": text
+              "content": question
           }
       ]
     )

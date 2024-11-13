@@ -5,4 +5,4 @@ ai_params:
   model_id: "QuantFactory/DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored-GGUF"
   gguf_file: "DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored.Q4_K_M.gguf"
   model_folder: "/app/tests/ai_samples/hf_home"
-  prompt: "You are security bot, for provided objects select only field names that can contain personally identifiable information (pii), finance, authentication and other sensitive data, don't consider as sensitive identifiers and statuses. You return json list of selected sensitive field names strings like [\"field_name2\", \"field_name2\", ... ] or empty json list."
+  prompt: "You are security bot, for provided objects select only field names that contain personally identifiable information, passport or other person identification document numbers, finance or payment information, authentication and other sensitive data."

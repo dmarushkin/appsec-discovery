@@ -41,34 +41,29 @@ class AiService:
 
                 object_to_score: Dict[str: List[str]] = {'field_names': []}
                 
-                for field in object.fields.values() :
-
-                    # no ai for already sensitive
-                    if not field.severity \
-                      and not ( field.field_name.split('.')[-1] in skip_ai \
-                            or field.field_name.lower().endswith('id') \
-                            or 'status' not in field.field_name.split('.')[-1].lower() ):
-                        object_to_score['field_names'].append(field.field_name.split('.')[-1])
-                
-                object_text = f"object: {object.object_name}\n\n" + yaml.safe_dump(object_to_score)
-
                 scored_list = []
 
-                if object_to_score['field_names'] :
-                
+                for field in object.fields.values() :
+
+                    quastion = f'''
+                    For object: {object.object_name}
+                    
+                    Field name: {field.field_name}
+
+                    Can contain sensitive data? Answer only 'yes' or 'no',
+                    '''
+
                     response = llm.create_chat_completion(
                         messages = [
                             {"role": "system", "content": self.system_prompt},
-                            {"role": "user", "content": object_text },
+                            {"role": "user", "content": quastion },
                         ]
                     )
 
                     answer = response['choices'][0]["message"]["content"]
 
-                    if '[' in answer and ']' in answer:
-
-                        json_txt = "[" + answer.split('[')[1].split(']')[0] + "]"
-                        scored_list = json.loads(json_txt)
+                    if 'yes' in answer.lower():
+                        scored_list.append(field.field_name)
 
                 scored_fields = {}
 
@@ -77,7 +72,7 @@ class AiService:
 
                 for field_name, field in object.fields.items():
 
-                    if field.field_name.split('.')[-1] in scored_list:
+                    if field.field_name in scored_list:
 
                         excluded = False
 

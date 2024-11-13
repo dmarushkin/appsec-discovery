@@ -41,9 +41,9 @@ class SwaggerParser(Parser):
 
             try:
                 swagger_data[local_swagger_file] = parse(swagger_file)
-            except Exception as ex:
-                logger.error(f"Failed to parse {self.parser} for file {local_swagger_file}: {ex}")
-
+            except:
+                pass
+            
         objects_list = self.parse_report(swagger_data)
 
         return objects_list
