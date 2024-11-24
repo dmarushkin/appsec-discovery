@@ -57,6 +57,8 @@ score_tags:
 Run on code project folder with swaggers, protobuf and other structured contracts in code and get parsed objects and fields marked with severity and category tags:
 
 ```
+appsec-discovery --source tests/swagger_samples
+
 - hash: 40140abef3b5f45d447d16e7180cc231
   object_name: Route /user/login (GET)
   object_type: route

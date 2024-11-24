@@ -22,7 +22,7 @@ Provided rules in conf.yaml or leave it empty for default list:
 score_tags:
   pii:
     high:
-      - '(first_name|firstname)'
+      - 'first_name'
       - 'last_name'
       - 'phone'
       - 'passport'
@@ -56,18 +56,18 @@ appsec-discovery --source tests/swagger_samples
   object_name: Route /user/login (GET)
   object_type: route
   parser: swagger
-  severity: high
+> severity: high  <<<<<<<<<<<<<<<<<<<<<<<< !!!
   tags:
-  - auth
+> - auth  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
   file: swagger.yaml
   line: 1
   properties:
     path:
       prop_name: path
       prop_value: /user/login
-      severity: medium
+>>>>  severity: medium  <<<<<<<<<<<<<<<<<< !!!
       tags:
-      - auth
+>>>>  - auth  <<<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
     method:
       prop_name: method
       prop_value: GET
@@ -77,79 +77,55 @@ appsec-discovery --source tests/swagger_samples
       field_type: string
       file: swagger.yaml
       line: 1
-      severity: medium
+>>>>  severity: medium  <<<<<<<<<<<<<<<<<< !!!
       tags:
-      - auth
+>>>>  - auth  <<<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
     query.param.password:
       field_name: query.param.password
       field_type: string
       file: swagger.yaml
       line: 1
-      severity: high
+>>>>  severity: high    <<<<<<<<<<<<<<<<<< !!!
       tags:
-      - auth
+>>>>  - auth  <<<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
     output:
       field_name: output
       field_type: string
       file: swagger.yaml
       line: 1
       ...
-- hash: 9e167a92c3a4ecb34a52a148775b3dba
-  object_name: Rpc /com.surajgharat.practice.grpc.service.SumService/Sum
-  object_type: rpc
-  parser: protobuf
-  file: test2.proto
-  line: 1
-  properties: {}
-  fields:
-    input.SumInput.n1:
-      field_name: SumInput.n1
-      field_type: int32
-      file: test2.proto
-      line: 1
-    input.SumInput.n2:
-      field_name: SumInput.n2
-      field_type: int32
-      file: test2.proto
-      line: 2
-    output.SumOutput.result:
-      field_name: SumOutput.result
-      field_type: int32
-      file: test2.proto
-      line: 1
-   ...
 - hash: 8a878eb2050c855faab96d2e52cc7cf8
-  object_name: Query MgmQueries.promoterInfo
+  object_name: Query Queries.promoterInfo
   object_type: query
   parser: graphql
-  severity: high
+> severity: high  <<<<<<<<<<<<<<<<<<<<<<<< !!!
   tags:
-  - pii
+> - pii  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
   file: query.graphql
   line: 143
   properties: {}
   fields:
-    input.MgmPromoterInfoInput.link:
-      field_name: input.MgmPromoterInfoInput.link
+    input.PromoterInfoInput.link:
+      field_name: input.PromoterInfoInput.link
       field_type: String
       file: query.graphql
       line: 291
-    output.MgmPromoterInfoPayload.firstName:
-      field_name: output.MgmPromoterInfoPayload.firstName
+    output.PromoterInfoPayload.firstName:
+      field_name: output.PromoterInfoPayload.firstName
       field_type: String
       file: query.graphql
       line: 342
-      severity: high
+>>>>  severity: high  <<<<<<<<<<<<<<<<<< !!!
       tags:
-      - pii
-    output.MgmPromoterInfoPayload.lastName:
-      field_name: output.MgmPromoterInfoPayload.lastName
+>>>>  - pii  <<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
+    output.PromoterInfoPayload.lastName:
+      field_name: output.PromoterInfoPayload.lastName
       field_type: String
       file: query.graphql
       line: 365
       severity: high
       tags:
-      - pii
+>>>>  - pii  <<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
 ```
 
 ## Score object fields with local LLM model
@@ -169,43 +145,13 @@ Run scan with new settings and get objects and fields severity from local AI eng
 ```
 appsec-discovery --source tests/swagger_samples --config tests/config_samples/ai_conf_llama.yaml
 
-- hash: 6ad58c7da41fc968c1de76f9233d645d
-  object_name: Swagger route /pet/{petId} (GET)
-  object_type: route
-  parser: swagger
-  file: /swagger.yaml
-  line: 41
-  properties:
-    path:
-      prop_name: path
-      prop_value: /pet/{petId}
-    method:
-      prop_name: method
-      prop_value: get
-  fields:
-    Input.petId:
-      field_name: Input.petId
-      field_type: integer
-      file: /swagger.yaml
-      line: 41
-    Output.Pet.id:
-      field_name: Output.Pet.id
-      field_type: integer
-      file: /swagger.yaml
-      line: 41
-    Output.Pet.name:
-      field_name: Output.Pet.name
-      field_type: string
-      file: /swagger.yaml
-      line: 41
-      ...
 - hash: 2e20a348a612aa28d24c1bd0498eebf0
   object_name: Swagger route /user/login (GET)
   object_type: route
   parser: swagger
-  severity: medium
+> severity: medium  <<<<<<<<<<<<<<<< !!!
   tags:
-  - llm
+> - llm  <<<<<<<<<<<<<<<<<<<<<<<<<<< !!!
   file: /swagger.yaml
   line: 83
   properties:
@@ -222,11 +168,10 @@ appsec-discovery --source tests/swagger_samples --config tests/config_samples/ai
       field_type: string
       file: /swagger.yaml
       line: 83
-      severity: medium
+>>>>  severity: medium  <<<<<<<<<<<<<< !!!
       tags:
-      - llm
+>>>>  - llm  <<<<<<<<<<<<<<<<<<<<<<<<< !!!
       ...
-
 ```
 
 At first run tool with download provided model from Huggingface into local cache dir, for next offline scans use this dir with pre downloaded models.
